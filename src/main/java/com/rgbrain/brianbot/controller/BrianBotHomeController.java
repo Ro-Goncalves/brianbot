@@ -11,18 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@RestController
-@RequestMapping("/brianbot")
-public class BrianBotController {   
+public class BrianBotHomeController {   
 
-    private static final Logger logger = LoggerFactory.getLogger(BrianBotController.class);
+    private static final Logger logger = LoggerFactory.getLogger(BrianBotHomeController.class);
 
     // @PostMapping("")
     // public void postBot(@RequestBody Object entity) {
     //     System.out.println("post " + entity);
     // }
 
-    @PostMapping("/messages-upsert")
+    // @PostMapping("/messages-upsert")
     public void postMessagesUpsert(@RequestBody JsonNode payload) {     
         logger.info("Nome Cabra: {}", payload);  
         if (payload.has("data")) {

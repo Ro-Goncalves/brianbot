@@ -2,15 +2,14 @@ package com.rgbrain.brianbot.domain.mensagens.core;
 
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
 import com.rgbrain.brianbot.domain.mensagens.core.port.incoming.MessageUseCase;
-import com.rgbrain.brianbot.domain.mensagens.core.port.outgoing.MessageRepository;
+import com.rgbrain.brianbot.domain.mensagens.core.port.outgoing.MensagemDataBase;
 
-public class MessagesDomainFacade implements MessageUseCase {
+import lombok.RequiredArgsConstructor;
 
-    private final MessageRepository messageRepository;
+@RequiredArgsConstructor
+public class MessagemFacade implements MessageUseCase {
 
-    public MessagesDomainFacade(MessageRepository messageRepository) {
-        this.messageRepository = messageRepository;
-    }
+    private final MensagemDataBase mensagemDataBase;
 
     @Override
     public void postMessagesUpsert(Mensagem mensagem) {
