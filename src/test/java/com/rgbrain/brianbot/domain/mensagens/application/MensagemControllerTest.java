@@ -1,20 +1,22 @@
 package com.rgbrain.brianbot.domain.mensagens.application;
 
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -27,15 +29,11 @@ import com.rgbrain.brianbot.domain.mensagens.core.port.incoming.MessageUseCase;
 @ActiveProfiles("test")
 public class MensagemControllerTest {
     
-    @Mock
-    private MessageUseCase messageUseCase;
-    
-    @InjectMocks
-    private MensagemController mensagemController;
-
     @Autowired
     private MockMvc mockMvc;
 
+    @MockitoBean
+    private MessageUseCase messageUseCase;
 
     @Test
     void dadoUmJsonDeMensagemDeUmUsuario_quandoConverterEmClasseDoDominio_deveRecuperarCamposEsperados() throws Exception {
@@ -53,7 +51,7 @@ public class MensagemControllerTest {
                     "pushName": "Rodrigo Gonçalves",
                     "status": "SERVER_ACK",
                     "message": {
-                        "conversation": "Olá"
+                        "conversation": "/BrianBot dominio-parametro1-parametro2-parametro3 Olá"
                     },
                     "messageType": "conversation",
                     "messageTimestamp": 1735007705,
@@ -72,16 +70,31 @@ public class MensagemControllerTest {
 
         // WHEN
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/messages-upsert")
+            MockMvcRequestBuilders.post("/brianbot/messages-upsert")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMessagensUpsertEntrada)
-        ).andReturn();
+        )
+        .andExpect(status().isOk());
 
         // THEN
         var argumentCaptured = ArgumentCaptor.forClass(Mensagem.class);
         verify(messageUseCase).postMessagesUpsert(argumentCaptured.capture());
 
         var mensagem = argumentCaptured.getValue();
-        assert mensagem.getEvento().equals("messages.upsert");
+        assertThat(mensagem.getEvento(), is(equalTo("messages.upsert")));
+        assertThat(mensagem.getInstancia(), is(equalTo("BrianBotTest")));
+        assertThat(mensagem.getIdRemoto(), is(equalTo("554384412362@s.whatsapp.net")));
+        assertThat(mensagem.getEnviadoPorMim(), is(equalTo(true)));
+        assertThat(mensagem.getNomeRemetente(), is(equalTo("Rodrigo Gonçalves")));
+        assertThat(mensagem.getStatus(), is(equalTo("SERVER_ACK")));
+        assertThat(mensagem.getMensagem(), is(equalTo("Olá")));
+        assertThat(mensagem.getTipoMensagem(), is(equalTo("conversation")));
+        assertThat(mensagem.getTimestampMensagem(), is(equalTo(1735007705L)));
+        assertThat(mensagem.getIdInstancia(), is(equalTo("e21c5134-989e-47e0-89d0-4f7934f6fb9d")));
+        assertThat(mensagem.getOrigem(), is(equalTo("web")));
+        assertThat(mensagem.getIsComando(), is(equalTo(true)));
+        assertThat(mensagem.getComando(), is(equalTo("dominio-parametro1-parametro2-parametro3")));
+        assertThat(mensagem.getDominioComando(), is(equalTo("dominio")));
+        assertThat(mensagem.getParametrosComando(), is(arrayContaining("parametro1", "parametro2", "parametro3")));
     }
 }
