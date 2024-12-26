@@ -13,8 +13,7 @@ public class MessagemFacade implements MessageUseCase {
 
     @Override
     public void postMessagesUpsert(Mensagem mensagem) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'postMessagesUpsert'");
+        System.err.println("Mensagem: " + mensagem);
     }
     
 }

@@ -1,8 +1,8 @@
 package com.rgbrain.brianbot.domain.mensagens.core.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,11 +27,36 @@ public class Mensagem {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMensagem;
 
-    private String telefoneRemente;
-    private String telefoneResposta;
+    @JsonAlias("event")
+    private String evento;
+
+    @JsonAlias("instance")
+    private String instancia;
+
+    @JsonAlias("data.key.remoteJid")
+    private String idRemoto;
+
+    @JsonAlias("fromMe")
+    private Boolean enviadoPorMim;
+
+    @JsonAlias("poshName")
     private String nomeRemetente;
+
+    @JsonAlias("status")    
+    private String status;
+
+    @JsonAlias("conversation")
     private String mensagem;
 
-    @Enumerated(EnumType.STRING)
-    private TipoMensagem tipoMensagem;
+    @JsonAlias("messageType")
+    private String tipoMensagem;
+
+    @JsonAlias("messageTimestamp")
+    private Long timestampMensagem;
+
+    @JsonAlias("instanceId")
+    private String idInstancia;
+
+    @JsonAlias("source")
+    private String origem;
 }

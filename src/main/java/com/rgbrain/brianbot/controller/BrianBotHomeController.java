@@ -1,16 +1,17 @@
 package com.rgbrain.brianbot.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.reactive.function.client.WebClient;
 
+// @RestController
+// @RequestMapping("/brianbot")
 public class BrianBotHomeController {   
 
     private static final Logger logger = LoggerFactory.getLogger(BrianBotHomeController.class);
