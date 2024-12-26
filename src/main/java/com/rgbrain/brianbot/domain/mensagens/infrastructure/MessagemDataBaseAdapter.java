@@ -7,5 +7,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MessagemDataBaseAdapter implements MensagemDataBase {
 
-	private final MessageRepository messageRepository;
+	//private final MessageRepository messageRepository;
 }
