@@ -1,15 +1,12 @@
 package com.rgbrain.brianbot.domain.mensagens.core.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import java.util.Arrays;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -18,45 +15,60 @@ import lombok.ToString;
 @Entity(name = "Mensagem")
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@EqualsAndHashCode(of = "idMensagem")
 @ToString(exclude = "idMensagem")
 public class Mensagem {
-    
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMensagem;
-
-    @JsonAlias("event")
+   
     private String evento;
-
-    @JsonAlias("instance")
     private String instancia;
-
-    @JsonAlias("data.key.remoteJid")
     private String idRemoto;
-
-    @JsonAlias("fromMe")
     private Boolean enviadoPorMim;
-
-    @JsonAlias("poshName")
     private String nomeRemetente;
-
-    @JsonAlias("status")    
     private String status;
-
-    @JsonAlias("conversation")
     private String mensagem;
-
-    @JsonAlias("messageType")
     private String tipoMensagem;
-
-    @JsonAlias("messageTimestamp")
     private Long timestampMensagem;
-
-    @JsonAlias("instanceId")
     private String idInstancia;
-
-    @JsonAlias("source")
     private String origem;
+    private Boolean isComando;
+    private String comando;
+    private String dominioComando;
+    private String[] parametrosComando;
+
+    public Mensagem(DadosMensagem dadosMensagem) {
+        this.evento = dadosMensagem.getEvent();
+        this.instancia = dadosMensagem.getInstance();
+        this.idRemoto = dadosMensagem.getData().getKey().getRemoteJid();
+        this.enviadoPorMim = dadosMensagem.getData().getKey().getFromMe();
+        this.nomeRemetente = dadosMensagem.getData().getPushName();
+        this.status = dadosMensagem.getData().getStatus();
+        this.mensagem = dadosMensagem.getData().getMessage().getConversation();
+        this.tipoMensagem = dadosMensagem.getData().getMessageType();
+        this.timestampMensagem = dadosMensagem.getData().getMessageTimestamp();
+        this.idInstancia = dadosMensagem.getData().getInstanceId();
+        this.origem = dadosMensagem.getData().getSource();
+        this.isComando = Boolean.FALSE;
+
+        /*
+         * Verifica se a mensagem é um comando
+         * Formato de um comando: /BrianBot comando
+         * Onde comando dominio-parametros1-parametros2-...-parametrosN
+         * Exemplo: /BrianBot clima-londrina
+         */
+        if(this.mensagem.startsWith("/BrianBot")) {
+            this.isComando = Boolean.TRUE;
+
+            var comando = this.mensagem.trim().split(" ");
+            this.comando = comando[1];
+
+            var parametros = comando[1].split("-");
+            this.dominioComando = parametros[0];
+            this.parametrosComando = Arrays.copyOfRange(parametros, 1, parametros.length);
+
+            // Atualiza o campo mensagem removendo o comando
+            this.mensagem = this.mensagem.replace("/BrianBot " + this.comando, "").trim();
+        }
+    }
 }
