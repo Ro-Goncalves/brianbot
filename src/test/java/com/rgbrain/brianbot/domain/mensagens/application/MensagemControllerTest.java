@@ -3,7 +3,6 @@ package com.rgbrain.brianbot.domain.mensagens.application;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
-import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 
@@ -11,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -95,6 +97,6 @@ public class MensagemControllerTest {
         assertThat(mensagem.getIsComando(), is(equalTo(true)));
         assertThat(mensagem.getComando(), is(equalTo("dominio-parametro1-parametro2-parametro3")));
         assertThat(mensagem.getDominioComando(), is(equalTo("dominio")));
-        assertThat(mensagem.getParametrosComando(), is(arrayContaining("parametro1", "parametro2", "parametro3")));
+        assertThat(mensagem.getParametrosComando(), is(equalTo(List.of("parametro1", "parametro2", "parametro3"))));
     }
 }

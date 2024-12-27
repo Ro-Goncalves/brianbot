@@ -1,5 +1,7 @@
 package com.rgbrain.brianbot.domain.mensagens.core.model;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.ToString;
 
@@ -8,7 +10,7 @@ import lombok.ToString;
 public class ComandoEvent {
     private String comando;
     private String dominioComando;
-    private String[] parametrosComando;
+    private List<String> parametrosComando;
 
     public ComandoEvent(Mensagem mensagem) {
         this.comando = mensagem.getComando();

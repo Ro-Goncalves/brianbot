@@ -5,6 +5,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.rgbrain.brianbot.domain.mensagens.core.model.ComandoEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
 import com.rgbrain.brianbot.domain.mensagens.core.model.RespostaEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.port.outgoing.MensagemEventPublisher;
@@ -69,7 +73,7 @@ public class MessagemFacadeTest {
         // then
         var captor = ArgumentCaptor.forClass(RespostaEvent.class);
         verify(mensagemEventPublisher).publicar(captor.capture());
-        verifyNoInteractions(mensagemEventPublisher);
+        verifyNoMoreInteractions(mensagemEventPublisher);
 
         var respostaEvent = captor.getValue();
 
@@ -98,11 +102,41 @@ public class MessagemFacadeTest {
         // then
         var captor = ArgumentCaptor.forClass(RespostaEvent.class);
         verify(mensagemEventPublisher).publicar(captor.capture());
-        verifyNoInteractions(mensagemEventPublisher);
-        
+        verifyNoMoreInteractions(mensagemEventPublisher);
+
         var respostaEvent = captor.getValue();
         
         assertThat(respostaEvent.mensagem(), containsString("Clima"));
         assertThat(respostaEvent.mensagem(), containsString("Gramática"));
+    }
+
+    @Test
+    @DisplayName("Quando o comando for com domínio, deve publicar ComandoEvent")
+    public void dadoComandoComDominio_quandoLidarComComando_devePublicarComandoEvent() {
+        // Given
+        var mensagem = 
+            Mensagem
+                .builder()
+                .nomeRemetente("Remetente")
+                .isComando(Boolean.TRUE)
+                .comando("/BrianBot Clima")
+                .dominioComando("Clima")
+                .parametrosComando(List.of("Londrina"))
+                .build();
+
+        doNothing().when(mensagemEventPublisher).publicar(Mockito.any(ComandoEvent.class));
+
+        // When
+        facade.postMessagesUpsert(mensagem);
+
+        // Then
+        var captor = ArgumentCaptor.forClass(ComandoEvent.class);
+        verify(mensagemEventPublisher).publicar(captor.capture());
+        verifyNoMoreInteractions(mensagemEventPublisher);
+
+        var comandoEvent = captor.getValue();
+        assertThat(comandoEvent.getComando(), is(equalTo(mensagem.getComando())));
+        assertThat(comandoEvent.getDominioComando(), is(equalTo(mensagem.getDominioComando())));
+        assertThat(comandoEvent.getParametrosComando(), is(equalTo(mensagem.getParametrosComando())));       
     }
 }

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rgbrain.brianbot.domain.mensagens.core.model.ComandoEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Dominios;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
 import com.rgbrain.brianbot.domain.mensagens.core.model.RespostaEvent;
@@ -56,7 +57,17 @@ public class MessagemFacade implements MessageUseCase {
                 mensagemResposta,
                 mensagem.getIdMensagem()
             );
-            logger.debug("Publicando evento para Mensagem de Resposta: {}", evento);
+            logger.debug("Publicando evento para Resposta: {}", evento);
+            mensagemEventPublisher.publicar(evento);
+        }
+
+        if (!dominioInvalido) {
+            logger.info(
+                "Dominio Válido: Dominio: {} - Comando recebido: {} - Parametros: {}", 
+                mensagem.getDominioComando(), mensagem.getComando(), mensagem.getParametrosComando());
+
+            var evento = new ComandoEvent(mensagem);
+            logger.debug("Publicando evento para Comando: {}", evento);
             mensagemEventPublisher.publicar(evento);
         }
     }

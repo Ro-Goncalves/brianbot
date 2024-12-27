@@ -1,6 +1,7 @@
 package com.rgbrain.brianbot.domain.mensagens.core.model;
 
 import java.util.Arrays;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ public class Mensagem {
     private Boolean isComando;
     private String comando;
     private String dominioComando;
-    private String[] parametrosComando;
+    private List<String> parametrosComando;
 
     public Mensagem(DadosMensagem dadosMensagem) {
         this.idMensagem = dadosMensagem.getData().getKey().getId();
@@ -60,7 +61,7 @@ public class Mensagem {
 
             var parametros = comando[1].split("-");
             this.dominioComando = parametros[0];
-            this.parametrosComando = Arrays.copyOfRange(parametros, 1, parametros.length);
+            this.parametrosComando = List.of(Arrays.copyOfRange(parametros, 1, parametros.length));
 
             // Atualiza o campo mensagem removendo o comando
             this.mensagem = this.mensagem.replace("/BrianBot " + this.comando, "").trim();
