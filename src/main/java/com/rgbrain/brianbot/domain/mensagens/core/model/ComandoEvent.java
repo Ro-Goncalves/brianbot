@@ -17,4 +17,9 @@ public class ComandoEvent {
         this.dominioComando = mensagem.getDominioComando();
         this.parametrosComando = mensagem.getParametrosComando();
     }
+
+    public String getAcaoComando() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAcaoComando'");
+    }
 }
