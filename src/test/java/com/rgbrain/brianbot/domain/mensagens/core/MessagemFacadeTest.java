@@ -69,6 +69,8 @@ public class MessagemFacadeTest {
         // then
         var captor = ArgumentCaptor.forClass(RespostaEvent.class);
         verify(mensagemEventPublisher).publicar(captor.capture());
+        verifyNoInteractions(mensagemEventPublisher);
+
         var respostaEvent = captor.getValue();
 
         assertThat(respostaEvent.instancia(), is(equalTo(mensagem.getInstancia())));
@@ -96,6 +98,8 @@ public class MessagemFacadeTest {
         // then
         var captor = ArgumentCaptor.forClass(RespostaEvent.class);
         verify(mensagemEventPublisher).publicar(captor.capture());
+        verifyNoInteractions(mensagemEventPublisher);
+        
         var respostaEvent = captor.getValue();
         
         assertThat(respostaEvent.mensagem(), containsString("Clima"));
