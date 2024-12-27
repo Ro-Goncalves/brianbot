@@ -2,25 +2,19 @@ package com.rgbrain.brianbot.domain.mensagens.core.model;
 
 import java.util.Arrays;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Table(name = "mensagens")
-@Entity(name = "Mensagem")
+
 @Getter
 @NoArgsConstructor
-@ToString(exclude = "idMensagem")
+@AllArgsConstructor
+@Builder
 public class Mensagem {
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idMensagem;
    
+    private String idMensagem;
     private String evento;
     private String instancia;
     private String idRemoto;
@@ -38,6 +32,7 @@ public class Mensagem {
     private String[] parametrosComando;
 
     public Mensagem(DadosMensagem dadosMensagem) {
+        this.idMensagem = dadosMensagem.getData().getKey().getId();
         this.evento = dadosMensagem.getEvent();
         this.instancia = dadosMensagem.getInstance();
         this.idRemoto = dadosMensagem.getData().getKey().getRemoteJid();
