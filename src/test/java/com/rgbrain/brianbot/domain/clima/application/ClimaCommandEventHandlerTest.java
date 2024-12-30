@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaAjuda;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaConsultarCidade;
-import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaObterPrevisao;
+import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaPrevisao;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaRegistrarCidade;
 import com.rgbrain.brianbot.domain.mensagens.core.model.ComandoEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
@@ -31,7 +31,7 @@ public class ClimaCommandEventHandlerTest {
     private ClimaRegistrarCidade climaRegistrarCidade;
 
     @Mock
-    private ClimaObterPrevisao climaObterPrevisao;
+    private ClimaPrevisao climaObterPrevisao;
 
     @InjectMocks
     private ClimaCommandEventHandler handler;
@@ -112,7 +112,7 @@ public class ClimaCommandEventHandlerTest {
         handler.handle(comandoEvent);
 
         // then
-        verify(climaObterPrevisao).obterPrevisao(comandoEvent);
+        verify(climaObterPrevisao).previsao(comandoEvent);
     }
 
 }

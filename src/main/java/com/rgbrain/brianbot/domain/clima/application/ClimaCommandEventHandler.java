@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaAjuda;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaConsultarCidade;
-import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaObterPrevisao;
+import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaPrevisao;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaRegistrarCidade;
 import com.rgbrain.brianbot.domain.mensagens.core.model.ComandoEvent;
 
@@ -29,8 +29,8 @@ public class ClimaCommandEventHandler {
     @Qualifier("ClimaRegistrarCidade")
     private final ClimaRegistrarCidade climaRegistrarCidade;
 
-    @Qualifier("ClimaObterPrevisao")
-    private final ClimaObterPrevisao climaObterPrevisao;
+    @Qualifier("ClimaPrevisao")
+    private final ClimaPrevisao climaPrevisao;
 
     @EventListener
     public void handle(ComandoEvent event) {
@@ -48,7 +48,7 @@ public class ClimaCommandEventHandler {
                 climaRegistrarCidade.registrar(event);
                 break;
             case PREVER:
-                climaObterPrevisao.obterPrevisao(event);
+                climaPrevisao.previsao(event);
                 break;
             default:
                 climaAjuda.ajudar(event);

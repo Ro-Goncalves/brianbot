@@ -3,17 +3,27 @@ package com.rgbrain.brianbot.domain.mensagens.core.model;
 import java.util.Arrays;
 import java.util.List;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
+@Table(name = "mensagens")
+@Entity(name = "Mensagem")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Mensagem {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
    
     private String idMensagem;
     private String evento;
@@ -28,10 +38,7 @@ public class Mensagem {
     private String idInstancia;
     private String origem;
     private Boolean isComando;
-    private String comando;
-    private String acaoComando;
-    private String dominioComando;
-    private List<String> parametrosComando;
+    private Comando comando;
 
     public Mensagem(DadosMensagem dadosMensagem) {
         this.idMensagem = dadosMensagem.getData().getKey().getId();
@@ -57,15 +64,19 @@ public class Mensagem {
         if(this.mensagem.startsWith("/BrianBot")) {
             this.isComando = Boolean.TRUE;
 
-            var comando = this.mensagem.trim().split(" ");
-            this.comando = comando[1];
+            var comandoStr = this.mensagem.trim().split(" ");
+            var comando = comandoStr[1];
 
-            var parametros = comando[1].split("-");
-            this.dominioComando = parametros[0];
-            this.parametrosComando = List.of(Arrays.copyOfRange(parametros, 1, parametros.length));
+            var parametros = comando.split("-");
+            var dominioComando = parametros[0];
+            var parametrosComando = List.of(Arrays.copyOfRange(parametros, 1, parametros.length));
+
+            this.comando = new Comando(comando, dominioComando, parametrosComando);
 
             // Atualiza o campo mensagem removendo o comando
-            this.mensagem = this.mensagem.replace("/BrianBot " + this.comando, "").trim();
+            this.mensagem = this.mensagem.replace("/BrianBot " + comando, "").trim();
         }
     }
+    
+    public static record Comando(String comando, String dominioComando, List<String> parametrosComando) {}
 }
