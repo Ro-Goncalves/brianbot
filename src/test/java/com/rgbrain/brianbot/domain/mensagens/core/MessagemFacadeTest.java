@@ -135,8 +135,8 @@ public class MessagemFacadeTest {
         verifyNoMoreInteractions(mensagemEventPublisher);
 
         var comandoEvent = captor.getValue();
-        assertThat(comandoEvent.getComando(), is(equalTo(mensagem.getComando())));
-        assertThat(comandoEvent.getDominioComando(), is(equalTo(mensagem.getDominioComando())));
-        assertThat(comandoEvent.getParametrosComando(), is(equalTo(mensagem.getParametrosComando())));       
+        assertThat(comandoEvent.comando(), is(equalTo(mensagem.getComando())));
+        assertThat(comandoEvent.dominioComando(), is(equalTo(mensagem.getDominioComando())));
+        assertThat(comandoEvent.parametrosComando(), is(equalTo(mensagem.getParametrosComando())));       
     }
 }

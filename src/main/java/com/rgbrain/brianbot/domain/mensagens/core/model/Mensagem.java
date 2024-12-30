@@ -29,6 +29,7 @@ public class Mensagem {
     private String origem;
     private Boolean isComando;
     private String comando;
+    private String acaoComando;
     private String dominioComando;
     private List<String> parametrosComando;
 

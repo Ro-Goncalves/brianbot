@@ -14,7 +14,7 @@ public class GramaticaCommandEventHandler {
 
     @EventListener
     public void handle(ComandoEvent event) {
-        if (event.getDominioComando().equals("gramatica")) {
+        if (event.dominioComando().equals("gramatica")) {
             logger.info("Comando gramatica recebido: {}", event);
         }
     }
