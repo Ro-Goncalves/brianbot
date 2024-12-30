@@ -2,24 +2,28 @@ package com.rgbrain.brianbot.domain.mensagens.core.model;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.ToString;
+import com.rgbrain.brianbot.domain.clima.core.model.ClimaAcoes;
 
-@Getter
-@ToString
-public class ComandoEvent {
-    private String comando;
-    private String dominioComando;
-    private List<String> parametrosComando;
-
+public record ComandoEvent ( 
+    String comando,
+    String dominioComando,
+    List<String> parametrosComando,
+    ClimaAcoes acaoComando
+){
     public ComandoEvent(Mensagem mensagem) {
-        this.comando = mensagem.getComando();
-        this.dominioComando = mensagem.getDominioComando();
-        this.parametrosComando = mensagem.getParametrosComando();
+        this(
+            mensagem.getComando(),
+            mensagem.getDominioComando(),
+            mensagem.getParametrosComando(),
+            getAcaoComando(mensagem)
+        );
     }
 
-    public String getAcaoComando() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAcaoComando'");
+    private static ClimaAcoes getAcaoComando(Mensagem mensagem) {
+        try {
+            return ClimaAcoes.valueOf(mensagem.getAcaoComando().toUpperCase());
+        } catch (Exception e) {
+            return ClimaAcoes.AJUDAR;
+        }
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaAjuda;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaConsultarCidade;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaObterPrevisao;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaRegistrarCidade;
@@ -32,24 +33,25 @@ public class ClimaCommandEventHandler {
     private final ClimaObterPrevisao climaObterPrevisao;
 
     @EventListener
-    public void handle(final ComandoEvent event) {
-        if (!event.getDominioComando().equalsIgnoreCase("clima")) {
+    public void handle(ComandoEvent event) {
+        if (!event.dominioComando().equalsIgnoreCase("clima")) {
             logger.debug("Comando não pertence ao domínio CLIMA");
             return;
         }
 
-        switch (event.getAcaoComando()) {
-            case "consultar":
+        var acao = event.acaoComando();
+        switch (acao) {
+            case CONSULTAR:
                 climaConsultarCidade.consultar(event);
                 break;
-            case "registar":
+            case REGISTRAR:
                 climaRegistrarCidade.registrar(event);
                 break;
-            case "obterprevisao":
+            case PREVER:
                 climaObterPrevisao.obterPrevisao(event);
                 break;
             default:
-                climaAjuda.ajuda(event);
+                climaAjuda.ajudar(event);
         }
     }
 }

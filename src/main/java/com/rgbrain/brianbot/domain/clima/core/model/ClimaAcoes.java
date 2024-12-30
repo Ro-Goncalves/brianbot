@@ -6,9 +6,10 @@ import java.util.stream.Collectors;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Dominios;
 
 public enum ClimaAcoes {
+    AJUDAR("📚✍️", "Ajudar", "Eu sou tipo aquele professor chato, mas sem a chatice que chateia! Quer arrasar na concordência e impressionar no português? Deixe comigo!"),
     CONSULTAR("🌞☔", "Consultar", "Quer saber se precisa levar o guarda-chuva ou passar o protetor solar? Eu sou praticamente um meteorologista virtual — só que mais bonito e sem diploma."), 
-    REGISTAR("📚✍️", "Registar", "Eu sou tipo aquele professor chato, mas sem a chatice que chateia! Quer arrasar na concordância e impressionar no português? Deixe comigo!"),
-    OBTER_PREVISAO("📚✍️", "ObterPrevisão", "Eu sou tipo aquele professor chato, mas sem a chatice que chateia! Quer arrasar na concordância e impressionar no português? Deixe comigo!");
+    REGISTRAR("📚✍️", "Registrar", "Eu sou tipo aquele professor chato, mas sem a chatice que chateia! Quer arrasar na concordância e impressionar no português? Deixe comigo!"),
+    PREVER("📚✍️", "Prever", "Eu sou tipo aquele professor chato, mas sem a chatice que chateia! Quer arrasar na concordância e impressionar no português? Deixe comigo!");
 
     private final String emoji;
     private final String nome;

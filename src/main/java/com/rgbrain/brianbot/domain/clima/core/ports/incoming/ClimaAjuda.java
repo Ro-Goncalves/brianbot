@@ -1,9 +1,7 @@
-package com.rgbrain.brianbot.domain.clima.application;
+package com.rgbrain.brianbot.domain.clima.core.ports.incoming;
 
 import com.rgbrain.brianbot.domain.mensagens.core.model.ComandoEvent;
 
 public interface ClimaAjuda {
-
-    void ajuda(ComandoEvent event);
-
+    void ajudar(ComandoEvent event);
 }
