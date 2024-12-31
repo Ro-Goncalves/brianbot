@@ -2,6 +2,7 @@ package com.rgbrain.brianbot.domain.mensagens.core.model;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +22,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Mensagem {
 
+    private static final String ATIVACAO = "/BrianBot";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,7 +40,7 @@ public class Mensagem {
     private Long timestampMensagem;
     private String idInstancia;
     private String origem;
-    private Boolean isComando;
+    private Boolean isAtivacao;
     private Comando comando;
 
     public Mensagem(DadosMensagem dadosMensagem) {
@@ -53,30 +56,65 @@ public class Mensagem {
         this.timestampMensagem = dadosMensagem.getData().getMessageTimestamp();
         this.idInstancia = dadosMensagem.getData().getInstanceId();
         this.origem = dadosMensagem.getData().getSource();
-        this.isComando = Boolean.FALSE;
+        this.isAtivacao = Boolean.FALSE;
 
-        /*
-         * Verifica se a mensagem é um comando
-         * Formato de um comando: /BrianBot comando
-         * Onde comando dominio-parametros1-parametros2-...-parametrosN
-         * Exemplo: /BrianBot clima-londrina
-         */
-        if(this.mensagem.startsWith("/BrianBot")) {
-            this.isComando = Boolean.TRUE;
+        processarComando(this.mensagem);
+    }
 
-            var comandoStr = this.mensagem.trim().split(" ");
-            var comando = comandoStr[1];
+    private void processarComando(String mensagem) {
+        if (!mensagem.startsWith(ATIVACAO)) {
+            this.isAtivacao = Boolean.FALSE;
+            return;
+        }
 
-            var parametros = comando.split("-");
-            var dominioComando = parametros[0];
-            var parametrosComando = List.of(Arrays.copyOfRange(parametros, 1, parametros.length));
+        this.isAtivacao = Boolean.TRUE;
 
-            this.comando = new Comando(comando, dominioComando, parametrosComando);
+        var mensagemTokens = mensagem.trim().split(" ");
+        // O comando é tudo aquilo que está depois do ATIVACAO
+        var comandoToken = Optional.ofNullable(mensagemTokens)
+            .filter(tokens -> tokens.length > 1)
+            .map(tokens -> tokens[1])
+            .orElse("");
 
-            // Atualiza o campo mensagem removendo o comando
-            this.mensagem = this.mensagem.replace("/BrianBot " + comando, "").trim();
+        this.comando = Comando.criarComando(comandoToken);
+
+        if (this.comando != null) {
+            this.mensagem = mensagem.replace(ATIVACAO + " " + comandoToken, "").trim();
         }
     }
-    
-    public static record Comando(String comando, String dominioComando, List<String> parametrosComando) {}
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class Comando {
+        private String dominio;
+        private String acao;
+        private List<String> parametros;        
+
+        public static Comando criarComando(String comandoToken) {
+            // Se o comando for vazio, retorna um comando vazio
+            if (comandoToken.isBlank()) {
+                return new Comando(null, null, null);
+            }
+
+            var parametros = comandoToken.split("-");
+            // O Domínio que deve ser chamado, é o primeiro token do comando
+            var dominioComando = parametros[0];
+
+            // Se o comando tiver apenas um token, retorna um comando com o domínio
+            if (parametros.length == 1) {
+                return new Comando(dominioComando, null, null);
+            }
+
+            // Se o comando tiver mais de um token, o segundo token é a ação que deve ser executada
+            var acaoComando = parametros[1];
+            // Se existir mais de dois tokens, os demais tokens serão os parâmetros
+            var parametrosComando = parametros.length <= 2 ? 
+                null : 
+                List.of(Arrays.copyOfRange(parametros, 2, parametros.length));
+
+            // Exemplo completo: /BrianBot dominio-acao-parametro1-parametro2
+            return new Comando(dominioComando, acaoComando, parametrosComando);
+        }
+    }
 }
