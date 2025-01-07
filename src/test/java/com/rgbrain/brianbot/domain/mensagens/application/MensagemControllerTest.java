@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
-import com.rgbrain.brianbot.domain.mensagens.core.port.incoming.MessageUseCase;
+import com.rgbrain.brianbot.domain.mensagens.core.port.incoming.MensagemAjuda;
 
 
 @SpringBootTest
@@ -35,7 +35,7 @@ public class MensagemControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private MessageUseCase messageUseCase;
+    private MensagemAjuda messageUseCase;
 
     @Test
     void dadoUmJsonDeMensagemDeUmUsuario_quandoConverterEmClasseDoDominio_deveRecuperarCamposEsperados() throws Exception {
@@ -94,9 +94,9 @@ public class MensagemControllerTest {
         assertThat(mensagem.getTimestampMensagem(), is(equalTo(1735007705L)));
         assertThat(mensagem.getIdInstancia(), is(equalTo("e21c5134-989e-47e0-89d0-4f7934f6fb9d")));
         assertThat(mensagem.getOrigem(), is(equalTo("web")));
-        assertThat(mensagem.getIsComando(), is(equalTo(true)));
+        assertThat(mensagem.getIsAtivacao(), is(equalTo(true)));
         assertThat(mensagem.getComando(), is(equalTo("dominio-parametro1-parametro2-parametro3")));
-        assertThat(mensagem.getDominioComando(), is(equalTo("dominio")));
-        assertThat(mensagem.getParametrosComando(), is(equalTo(List.of("parametro1", "parametro2", "parametro3"))));
+        assertThat(mensagem.getComando().getDominio(), is(equalTo("dominio")));
+        assertThat(mensagem.getComando().getParametros(), is(equalTo(List.of("parametro1", "parametro2", "parametro3"))));
     }
 }

@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rgbrain.brianbot.domain.mensagens.core.model.DadosMensagem;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
-import com.rgbrain.brianbot.domain.mensagens.core.port.incoming.MessageUseCase;
+import com.rgbrain.brianbot.domain.mensagens.core.model.command.MensagemAjudaCommand;
+import com.rgbrain.brianbot.domain.mensagens.core.model.command.MensagemDominioValidoCommand;
+import com.rgbrain.brianbot.domain.mensagens.core.port.incoming.MensagemDominioValido;
+import com.rgbrain.brianbot.domain.mensagens.core.port.incoming.MensagemAjuda;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,13 +24,29 @@ public class MensagemController {
 
     private static final Logger logger = LoggerFactory.getLogger(MensagemController.class);
 
-    @Qualifier("MessageUseCase")
-    private final MessageUseCase messageUseCase;    
+    @Qualifier("MensagemAjuda")
+    private final MensagemAjuda mensagemAjuda;
+
+    @Qualifier("MensagemDominioValido")
+    private final MensagemDominioValido mensagemDominioValido;
 
     @PostMapping("/messages-upsert")
     public void messagesUpsert(@RequestBody DadosMensagem dadosMensagem) {       
         logger.debug("DadosMensagem: {}", dadosMensagem);
-        messageUseCase.postMessagesUpsert(new Mensagem(dadosMensagem));
         
+        var mensagem = new Mensagem(dadosMensagem);
+
+        if (!mensagem.getIsAtivacao()) {
+            logger.debug("Mensagem não é comando de ativação");
+            return;
+        }
+
+        if (mensagem.getComando().isDominioValido()) {
+            mensagemDominioValido.handle(new MensagemDominioValidoCommand(mensagem));
+            return;
+        }
+        
+        mensagemAjuda.handle(new MensagemAjudaCommand(mensagem));
+        return;
     }
 }

@@ -116,5 +116,12 @@ public class Mensagem {
             // Exemplo completo: /BrianBot dominio-acao-parametro1-parametro2
             return new Comando(dominioComando, acaoComando, parametrosComando);
         }
+
+        public Boolean isDominioValido() {
+            return Arrays.stream(Dominios.values())
+                .anyMatch(
+                    dominio -> dominio.name().equalsIgnoreCase(this.dominio)
+                );
+        }
     }
 }
