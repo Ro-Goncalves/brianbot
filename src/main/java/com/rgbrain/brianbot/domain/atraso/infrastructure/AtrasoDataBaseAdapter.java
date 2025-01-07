@@ -2,8 +2,8 @@ package com.rgbrain.brianbot.domain.atraso.infrastructure;
 
 import java.util.List;
 
-import com.rgbrain.brianbot.domain.atraso.core.model.AtrasoDetalhado;
-import com.rgbrain.brianbot.domain.atraso.core.port.outgoing.AtrasoDataBase;
+import com.rgbrain.brianbot.domain.atraso.core.model.dados.DadosDetalheAtraso;
+import com.rgbrain.brianbot.domain.atraso.core.ports.outgoing.AtrasoDataBase;
 import com.rgbrain.brianbot.domain.atraso.infrastructure.entity.Atraso;
 
 import lombok.RequiredArgsConstructor;
@@ -19,9 +19,9 @@ public class AtrasoDataBaseAdapter implements AtrasoDataBase {
     }
 
     @Override
-    public AtrasoDetalhado obterAtrasosDetalhado(Long idComissionado) {
+    public DadosDetalheAtraso obterAtrasosDetalhado(Long idComissionado) {
         var atrasos = atrasoRepository.findByIdComissionado(idComissionado);
-        var atrasoDetalhado = new AtrasoDetalhado(atrasos);
+        var atrasoDetalhado = new DadosDetalheAtraso(atrasos);
         
         return atrasoDetalhado;
     }

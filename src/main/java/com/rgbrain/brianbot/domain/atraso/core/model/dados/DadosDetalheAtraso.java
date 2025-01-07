@@ -1,10 +1,10 @@
-package com.rgbrain.brianbot.domain.atraso.core.model;
+package com.rgbrain.brianbot.domain.atraso.core.model.dados;
 
 import java.util.List;
 
 import com.rgbrain.brianbot.domain.atraso.infrastructure.entity.Atraso;
 
-public record AtrasoDetalhado(
+public record DadosDetalheAtraso(
     Integer quantidadeParcelasAtraso,
     Double valorTotalParcelasAtraso,
     Double valorTotalCreditoAtraso,
@@ -16,7 +16,7 @@ public record AtrasoDetalhado(
     Integer quantidadeAtrasiVencimento20   
 ) {
    
-    public AtrasoDetalhado(List<Atraso> atrasos) {
+    public DadosDetalheAtraso(List<Atraso> atrasos) {
         this(
             atrasos
                 .stream()
