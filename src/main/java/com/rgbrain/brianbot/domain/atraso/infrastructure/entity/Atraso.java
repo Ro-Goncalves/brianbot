@@ -56,4 +56,14 @@ public class Atraso {
 
     @Column(name = "DT_Atraso")
     private LocalDate dataAtraso;
+
+    @Column(name = "CD_Grupo")
+    private String codigoGrupo;
+
+    @Column(name = "CD_Cota")
+    private String codigoCota;
+    
+    @Column(name = "Versao")
+    private String versao;
+
 }
