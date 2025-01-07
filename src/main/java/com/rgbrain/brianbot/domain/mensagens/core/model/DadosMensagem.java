@@ -2,11 +2,15 @@ package com.rgbrain.brianbot.domain.mensagens.core.model;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class DadosMensagem {
    
     private Long idMensagem;
@@ -26,6 +30,8 @@ public class DadosMensagem {
     @Embeddable
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class MessageData {
         @Embedded
         private MessageKey key;
@@ -43,7 +49,8 @@ public class DadosMensagem {
     
     @Embeddable
     @Getter
-    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class MessageKey {
         private String remoteJid;
         private Boolean fromMe;
@@ -53,6 +60,8 @@ public class DadosMensagem {
     @Embeddable
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class MessageContent {
         private String conversation;
     }
