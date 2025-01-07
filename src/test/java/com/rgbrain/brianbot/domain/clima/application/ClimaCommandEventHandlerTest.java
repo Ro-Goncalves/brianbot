@@ -15,8 +15,8 @@ import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaAjuda;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaConsultarCidade;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaPrevisao;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaRegistrarCidade;
-import com.rgbrain.brianbot.domain.mensagens.core.model.ComandoEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
+import com.rgbrain.brianbot.domain.mensagens.core.model.event.ComandoEvent;
 
 @ExtendWith(MockitoExtension.class)
 public class ClimaCommandEventHandlerTest {
@@ -44,9 +44,9 @@ public class ClimaCommandEventHandlerTest {
             Mensagem
                 .builder()
                 .comando("/BrianBot clima")
-                .dominioComando("clima")
+                .dominio("clima")
                 .acaoComando(null)
-                .parametrosComando(List.of("")).build());
+                .parametros(List.of("")).build());
 
         // when
         handler.handle(comandoEvent);
@@ -64,9 +64,9 @@ public class ClimaCommandEventHandlerTest {
                 .builder()
                 .isComando(Boolean.TRUE)
                 .comando("/BrianBot clima-consultar-cidade-londrina")
-                .dominioComando("clima")
+                .dominio("clima")
                 .acaoComando("consultar")
-                .parametrosComando(List.of("cidade", "londrina")).build());
+                .parametros(List.of("cidade", "londrina")).build());
 
         // when
         handler.handle(comandoEvent);
@@ -84,9 +84,9 @@ public class ClimaCommandEventHandlerTest {
                 .builder()
                 .isComando(Boolean.TRUE)
                 .comando("/BrianBot clima-registrar-85946")
-                .dominioComando("clima")
+                .dominio("clima")
                 .acaoComando("registrar")
-                .parametrosComando(List.of("85946")).build());
+                .parametros(List.of("85946")).build());
 
         // when
         handler.handle(comandoEvent);
@@ -104,9 +104,9 @@ public class ClimaCommandEventHandlerTest {
                 .builder()
                 .isComando(Boolean.TRUE)
                 .comando("/BrianBot clima-prever")
-                .dominioComando("clima")
+                .dominio("clima")
                 .acaoComando("prever")
-                .parametrosComando(List.of("")).build());
+                .parametros(List.of("")).build());
 
         // when
         handler.handle(comandoEvent);

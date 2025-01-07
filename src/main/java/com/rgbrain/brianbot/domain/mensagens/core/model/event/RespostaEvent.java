@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.domain.mensagens.core.model;
+package com.rgbrain.brianbot.domain.mensagens.core.model.event;
 
 public record RespostaEvent(
     String instancia,

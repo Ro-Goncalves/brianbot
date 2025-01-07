@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.rgbrain.brianbot.domain.mensagens.core.model.ComandoEvent;
+import com.rgbrain.brianbot.domain.mensagens.core.model.event.ComandoEvent;
 
 @Component
 public class GramaticaCommandEventHandler {
