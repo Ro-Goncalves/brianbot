@@ -18,9 +18,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.rgbrain.brianbot.domain.mensagens.core.model.ComandoEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
-import com.rgbrain.brianbot.domain.mensagens.core.model.RespostaEvent;
+import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem.Comando;
+import com.rgbrain.brianbot.domain.mensagens.core.model.event.ComandoEvent;
+import com.rgbrain.brianbot.domain.mensagens.core.model.event.RespostaEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.port.outgoing.MensagemEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,14 +34,14 @@ public class MessagemFacadeTest {
     private MessagemFacade facade;
 
     @Test
-    @DisplayName("Quando o comando for sem /BrianBot, deve fazer nada")
-    public void dadoUmaMensagemSemCommando_quandoLidarComComando_deveFazerNada() {
+    @DisplayName("Quando a mensagem não começar com a ATIVACAO, deve fazer nada")
+    public void dadoUmaMensagemSemAtivacao_quandoLidarComComando_deveFazerNada() {
         // given
         var mensagem = 
             Mensagem
                 .builder()
-                .isComando(Boolean.FALSE)         
-                .comando("Meu Amor Lindo Kamy")
+                .isAtivacao(Boolean.FALSE)         
+                .comando(null)
                 .build();
        
         // when
@@ -51,7 +52,7 @@ public class MessagemFacadeTest {
     }
 
     @Test
-    @DisplayName("Quando o comando for sem opções, deve criar mensagem de ajuda")
+    @DisplayName("Quando a mensagem conter apenas a ATIVACAO, deve criar mensagem de ajuda")
     public void dadoComandoSemOpcoes_quandoLidarComComando_deveCriarMensagemDeAjuda() {
         // given
         var mensagem = 
@@ -61,8 +62,8 @@ public class MessagemFacadeTest {
                 .idRemoto("ID Remoto")
                 .idMensagem("ID Mensagem")
                 .nomeRemetente("Remetente")
-                .isComando(Boolean.TRUE)
-                .comando("/BrianBot")
+                .isAtivacao(Boolean.TRUE)
+                .comando(null)
                 .build();
 
         doNothing().when(mensagemEventPublisher).publicar(Mockito.any(RespostaEvent.class));
@@ -91,8 +92,8 @@ public class MessagemFacadeTest {
             Mensagem
                 .builder()
                 .nomeRemetente("Remetente")
-                .isComando(Boolean.TRUE)
-                .comando("/BrianBot")
+                .isAtivacao(Boolean.TRUE)
+                .comando(Mensagem.Comando.builder().comando("/BrianBot").build())
                 .build();
         doNothing().when(mensagemEventPublisher).publicar(Mockito.any(RespostaEvent.class));
 
@@ -118,10 +119,14 @@ public class MessagemFacadeTest {
             Mensagem
                 .builder()
                 .nomeRemetente("Remetente")
-                .isComando(Boolean.TRUE)
-                .comando("/BrianBot Clima")
-                .dominioComando("Clima")
-                .parametrosComando(List.of("Londrina"))
+                .isAtivacao(Boolean.TRUE)
+                .comando(
+                    Mensagem.Comando
+                        .builder()
+                        .comando("Clima")
+                        .dominio("Clima")
+                        .parametros(List.of("Londrina"))
+                        .build())
                 .build();
 
         doNothing().when(mensagemEventPublisher).publicar(Mockito.any(ComandoEvent.class));
@@ -135,8 +140,8 @@ public class MessagemFacadeTest {
         verifyNoMoreInteractions(mensagemEventPublisher);
 
         var comandoEvent = captor.getValue();
-        assertThat(comandoEvent.comando(), is(equalTo(mensagem.getComando())));
-        assertThat(comandoEvent.dominioComando(), is(equalTo(mensagem.getDominioComando())));
-        assertThat(comandoEvent.parametrosComando(), is(equalTo(mensagem.getParametrosComando())));       
+        assertThat(comandoEvent.comando(), is(equalTo(mensagem.getComando().getComando())));
+        assertThat(comandoEvent.dominioComando(), is(equalTo(mensagem.getComando().getDominio())));
+        assertThat(comandoEvent.parametrosComando(), is(equalTo(mensagem.getComando().getParametros())));       
     }
 }
