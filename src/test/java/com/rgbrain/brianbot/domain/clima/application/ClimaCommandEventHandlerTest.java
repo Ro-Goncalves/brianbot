@@ -16,6 +16,8 @@ import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaConsultarCidad
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaPrevisao;
 import com.rgbrain.brianbot.domain.clima.core.ports.incoming.ClimaRegistrarCidade;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
+import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem.Comando;
+import com.rgbrain.brianbot.domain.mensagens.core.model.command.MensagemDominioValidoCommand;
 import com.rgbrain.brianbot.domain.mensagens.core.model.event.ComandoEvent;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,12 +43,14 @@ public class ClimaCommandEventHandlerTest {
     void dadoUmEventoDeComandoSemAcao_quandoLidarComComando_deveChamarClimaAjuda() {
         // given
         var comandoEvent = new ComandoEvent(
-            Mensagem
-                .builder()
-                .comando("/BrianBot clima")
-                .dominio("clima")
-                .acaoComando(null)
-                .parametros(List.of("")).build());
+            new MensagemDominioValidoCommand(
+                Mensagem
+                    .builder()
+                    .isAtivacao(Boolean.TRUE)
+                    .comando(
+                        Comando.builder().dominio("clima").build()).build()
+            )
+        );
 
         // when
         handler.handle(comandoEvent);
@@ -60,13 +64,19 @@ public class ClimaCommandEventHandlerTest {
     void dadoUmEventoDeComandoComAcaoConsultar_quandoLidarComComando_deveChamarClimaConsultarCidade() {
         // given
         var comandoEvent = new ComandoEvent(
-            Mensagem
-                .builder()
-                .isComando(Boolean.TRUE)
-                .comando("/BrianBot clima-consultar-cidade-londrina")
-                .dominio("clima")
-                .acaoComando("consultar")
-                .parametros(List.of("cidade", "londrina")).build());
+            new MensagemDominioValidoCommand(
+                Mensagem
+                    .builder()
+                    .isAtivacao(Boolean.TRUE)
+                    .comando(
+                        Comando.builder()
+                            .dominio("clima")
+                            .acao("consultar")
+                            .parametros(List.of("cidade", "londrina"))
+                            .build())
+                    .build()
+            )
+        );       
 
         // when
         handler.handle(comandoEvent);
@@ -80,13 +90,19 @@ public class ClimaCommandEventHandlerTest {
     void dadoUmEventoDeComandoComAcaoRegistrar_quandoLidarComComando_deveChamarClimaRegistrarCidade() {
         // given
         var comandoEvent = new ComandoEvent(
-            Mensagem
-                .builder()
-                .isComando(Boolean.TRUE)
-                .comando("/BrianBot clima-registrar-85946")
-                .dominio("clima")
-                .acaoComando("registrar")
-                .parametros(List.of("85946")).build());
+            new MensagemDominioValidoCommand(
+                Mensagem
+                    .builder()
+                    .isAtivacao(Boolean.TRUE)
+                    .comando(
+                        Comando.builder()
+                            .dominio("clima")
+                            .acao("registrar")
+                            .parametros(List.of("cidade", "85946"))
+                            .build())
+                    .build()
+            )
+        );
 
         // when
         handler.handle(comandoEvent);
@@ -100,13 +116,18 @@ public class ClimaCommandEventHandlerTest {
     void dadoUmEventoDeComandoComAcaoPrever_quandoLidarComComando_deveChamarClimaObterPrevisao() {
         // given
         var comandoEvent = new ComandoEvent(
-            Mensagem
-                .builder()
-                .isComando(Boolean.TRUE)
-                .comando("/BrianBot clima-prever")
-                .dominio("clima")
-                .acaoComando("prever")
-                .parametros(List.of("")).build());
+            new MensagemDominioValidoCommand(
+                Mensagem
+                    .builder()
+                    .isAtivacao(Boolean.TRUE)
+                    .comando(
+                        Comando.builder()
+                            .dominio("clima")
+                            .acao("prever")
+                            .build())
+                    .build()
+            )
+        );      
 
         // when
         handler.handle(comandoEvent);
