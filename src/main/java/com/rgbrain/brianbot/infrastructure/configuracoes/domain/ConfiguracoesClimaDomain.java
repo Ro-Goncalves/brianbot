@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.infrastructure.domain;
+package com.rgbrain.brianbot.infrastructure.configuracoes.domain;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
