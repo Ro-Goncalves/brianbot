@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,6 +42,8 @@ public class Mensagem {
     private String idInstancia;
     private String origem;
     private Boolean isAtivacao;
+
+    @Transient
     private Comando comando;
 
     public Mensagem(DadosMensagem dadosMensagem) {
