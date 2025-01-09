@@ -26,7 +26,7 @@ public class AtrasoController {
     private final ObterTodosAtrasos obterTodosAtrasos;
 
     @GetMapping("")
-    public ResponseEntity<List<DadosConsorciadoAtrasos>> getMethodName(@RequestBody @Valid ObterTodosAtrasosCommand command) {
+    public ResponseEntity<List<DadosConsorciadoAtrasos>> obterTodosAtrasos(@RequestBody @Valid ObterTodosAtrasosCommand command) {
         var todosAtrasos = obterTodosAtrasos.handle(command);
         return ResponseEntity.ok(todosAtrasos);
     }

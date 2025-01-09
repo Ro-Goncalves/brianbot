@@ -4,21 +4,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-// import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.rgbrain.brianbot.domain.atraso.AtrasoDados;
 import com.rgbrain.brianbot.domain.atraso.core.model.command.ObterTodosAtrasosCommand;
 import com.rgbrain.brianbot.domain.atraso.core.ports.outgoing.AtrasoDataBase;
-import com.rgbrain.brianbot.domain.atraso.infrastructure.entity.Atraso;
 
 public class AtrasoFacadeTest {
 
@@ -37,41 +34,7 @@ public class AtrasoFacadeTest {
     void quandoLidarComObterTodosAtrasosCommand_deveRetornarListaDeDadosConsorciadoAtrasos() {
         //Given
         var command = new ObterTodosAtrasosCommand(1L);
-        var atrasosComissionado = List.of(
-            Atraso.builder()
-                .nomeConsorciado("Consorciado 01")
-                .telefoneConsorciado("Telefone 01")
-                .emailConsorciado("Email 01")
-                .codigoGrupo("Grupo 01")
-                .codigoCota("Cota 01")
-                .versao("Versao 01")
-                .valorCredito(500.00)
-                .valorParcela(50.00)
-                .valorAtraso(10.00)
-                .build(),
-            Atraso.builder()
-                .nomeConsorciado("Consorciado 02")
-                .telefoneConsorciado("Telefone 02")
-                .emailConsorciado("Email 02")
-                .codigoGrupo("Grupo 02")
-                .codigoCota("Cota 01")
-                .versao("Versao 01")
-                .valorCredito(500.00)
-                .valorParcela(50.00)
-                .valorAtraso(10.00)
-                .build(),
-            Atraso.builder()
-                .nomeConsorciado("Consorciado 02")
-                .telefoneConsorciado("Telefone 02")
-                .emailConsorciado("Email 02")
-                .codigoGrupo("Grupo 02")
-                .codigoCota("Cota 02")
-                .versao("Versao 01")
-                .valorCredito(500.00)
-                .valorParcela(50.00)
-                .valorAtraso(10.00)
-                .build()
-        );
+        var atrasosComissionado = AtrasoDados.criarListaAtraso();
         when(atrasoDataBase.obterAtrasos(Mockito.anyLong())).thenReturn(atrasosComissionado);
 
         //When
@@ -92,11 +55,10 @@ public class AtrasoFacadeTest {
         var segundoConsorciado = dadosConsorciadoAtrasos.get(1);
         assertThat(segundoConsorciado.nomeConsorciado(), is(equalTo("Consorciado 02")));
         assertThat(segundoConsorciado.telefoneConsorciado(), is(equalTo("Telefone 02")));
-        assertThat(segundoConsorciado.emailConsorciado(), is(equalTo("Email 02")));
-        
-        assertThat(primeiroConsorciado.valorTotalCreditoAtraso(), is(equalTo(1000.00)));
-        assertThat(primeiroConsorciado.valorTotalParcelaAtraso(), is(equalTo(100.00)));
-        assertThat(primeiroConsorciado.valorTotalAtraso(), is(equalTo(20.00)));
+        assertThat(segundoConsorciado.emailConsorciado(), is(equalTo("Email 02")));        
+        assertThat(segundoConsorciado.valorTotalCreditoAtraso(), is(equalTo(1000.00)));
+        assertThat(segundoConsorciado.valorTotalParcelaAtraso(), is(equalTo(100.00)));
+        assertThat(segundoConsorciado.valorTotalAtraso(), is(equalTo(20.00)));
 
     }
 }
