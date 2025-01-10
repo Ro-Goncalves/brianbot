@@ -8,7 +8,10 @@ public record DadosCotaAtraso (
     String versao,
     Double valorCredito,
     Double valorParcela,
-    Double valorAtraso
+    Double valorAtraso,
+    Integer quantidadeParcelasAtraso,
+    String nomeBem,
+    Integer diaVencimanto
 ) {
 
     public DadosCotaAtraso(Atraso atraso) {
@@ -18,7 +21,10 @@ public record DadosCotaAtraso (
             atraso.getVersao(), 
             atraso.getValorCredito(), 
             atraso.getValorParcela(), 
-            atraso.getValorAtraso()
+            atraso.getValorAtraso(),
+            atraso.getQuantidadeParcelasAtraso(),
+            atraso.getNomeBem(),
+            atraso.getDataVencimento().getDayOfMonth()
         );
     }
 
