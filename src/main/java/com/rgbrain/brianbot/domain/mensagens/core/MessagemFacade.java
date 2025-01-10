@@ -10,10 +10,10 @@ import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
 import com.rgbrain.brianbot.domain.mensagens.core.model.command.MensagemAjudaCommand;
 import com.rgbrain.brianbot.domain.mensagens.core.model.command.MensagemDominioValidoCommand;
 import com.rgbrain.brianbot.domain.mensagens.core.model.event.ComandoEvent;
-import com.rgbrain.brianbot.domain.mensagens.core.model.event.RespostaEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.port.incoming.MensagemAjuda;
 import com.rgbrain.brianbot.domain.mensagens.core.port.incoming.MensagemDominioValido;
 import com.rgbrain.brianbot.domain.mensagens.core.port.outgoing.MensagemEventPublisher;
+import com.rgbrain.brianbot.infrastructure.resposta.model.RespostaEvent;
 
 import lombok.RequiredArgsConstructor;
 
