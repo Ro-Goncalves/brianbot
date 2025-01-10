@@ -2,8 +2,6 @@ package com.rgbrain.brianbot.domain.saci.core.model.dados;
 
 import java.util.List;
 
-import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Atraso;
-
 public record DadosDetalheAtraso(
     Integer quantidadeParcelasAtraso,
     Double valorTotalParcelasAtraso,
@@ -15,39 +13,18 @@ public record DadosDetalheAtraso(
     Integer quantidadeAtrasiVencimento16,
     Integer quantidadeAtrasiVencimento20   
 ) {
-   
-    public DadosDetalheAtraso(List<Atraso> atrasos) {
+
+    public DadosDetalheAtraso(List<DadosCotaAtraso> cotasAtrasoComissionado) {
         this(
-            atrasos
-                .stream()
-                .mapToInt(Atraso::getQuantidadeParcelasAtraso)
-                .sum(),
-            atrasos
-                .stream()
-                .mapToDouble(Atraso::getValorAtraso)
-                .sum(),
-            atrasos
-                .stream()
-                .mapToDouble(Atraso::getValorCredito)
-                .sum(),
-            (int) atrasos.stream()
-                .filter(atraso -> atraso.getNomeBem().equals("Imovel"))
-                .count(),
-            (int) atrasos.stream()
-                .filter(atraso -> atraso.getNomeBem().equals("Veiculo"))
-                .count(),
-            (int) atrasos.stream()
-                .filter(atraso -> atraso.getNomeBem().equals("Servico"))
-                .count(),
-            (int) atrasos.stream()
-                .filter(atraso -> atraso.getDataAtraso().getDayOfMonth() == 8)
-                .count(),
-            (int) atrasos.stream()
-                .filter(atraso -> atraso.getDataAtraso().getDayOfMonth() == 16)
-                .count(),
-            (int) atrasos.stream()
-                .filter(atraso -> atraso.getDataAtraso().getDayOfMonth() == 20)
-                .count()
+            cotasAtrasoComissionado.stream().mapToInt(DadosCotaAtraso::quantidadeParcelasAtraso).sum(),
+            cotasAtrasoComissionado.stream().mapToDouble(DadosCotaAtraso::valorParcela).sum(),
+            cotasAtrasoComissionado.stream().mapToDouble(DadosCotaAtraso::valorCredito).sum(),
+            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.nomeBem().equals("Imovel")).count(),
+            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.nomeBem().equals("Veiculo")).count(),
+            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.nomeBem().equals("Servico")).count(),
+            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.diaVencimanto() == 8).count(),
+            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.diaVencimanto() == 16).count(),
+            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.diaVencimanto() == 20).count()
         );
     }
 
