@@ -4,9 +4,12 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +17,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "atraso")
+@Table(name = "atrasos")
 @Entity(name = "Atraso")
 @Getter
 @NoArgsConstructor
@@ -28,23 +31,34 @@ public class Atraso {
     @Column(name = "ID_Atraso")
     private Long idAtraso;
 
-    @Column(name= "ID_Comissionado")
-    private Long idComissionado;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_Comissionado")
+    private Comissionado comissionado;
 
-    @Column(name= "NM_Consorciado")
-    private String nomeConsorciado;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_Consorciado")
+    private Consorciado consorciado;
 
-    @Column(name = "Telefone_Consorciado")
-    private String telefoneConsorciado;
-
-    @Column(name = "Email_Consorciado")
-    private String emailConsorciado;
-
-    @Column(name = "VL_Credito")
-    private Double valorCredito;
+    @Column(name = "QTD_Parcelas_Atraso")
+    private Integer quantidadeParcelasAtraso;
 
     @Column(name = "VL_Atraso")
     private Double valorAtraso;
+
+    @Column(name = "DT_Atraso")
+    private LocalDate dataAtraso;
+    
+    @Column(name = "CD_Grupo")
+    private String codigoGrupo;
+    
+    @Column(name = "CD_Cota")
+    private String codigoCota;
+    
+    @Column(name = "Versao")
+    private String versao;
+
+    @Column(name = "VL_Credito")
+    private Double valorCredito;
 
     @Column(name = "VL_Parcela")
     private Double valorParcela;
@@ -55,19 +69,8 @@ public class Atraso {
     @Column(name = "NM_Bem")
     private String nomeBem;
 
-    @Column(name = "QTD_Parcelas_Atraso")
-    private Integer quantidadeParcelasAtraso;
-
-    @Column(name = "DT_Atraso")
-    private LocalDate dataAtraso;
-
-    @Column(name = "CD_Grupo")
-    private String codigoGrupo;
-
-    @Column(name = "CD_Cota")
-    private String codigoCota;
-    
-    @Column(name = "Versao")
-    private String versao;
+    public Long getIdComissionado() {
+        return comissionado.getIdComissionado();
+    }
 
 }
