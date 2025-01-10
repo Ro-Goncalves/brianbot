@@ -7,7 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.rgbrain.brianbot.domain.mensagens.core.model.event.RespostaEvent;
+import com.rgbrain.brianbot.infrastructure.resposta.model.RespostaEvent;
 
 @Component
 public class RespostaEventHandler {
