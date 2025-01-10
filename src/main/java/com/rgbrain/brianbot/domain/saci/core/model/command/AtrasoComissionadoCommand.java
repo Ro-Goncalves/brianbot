@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.domain.atraso.core.model.command;
+package com.rgbrain.brianbot.domain.saci.core.model.command;
 
 public record AtrasoComissionadoCommand (
     Long idComissionado

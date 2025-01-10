@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.domain.atraso.core;
+package com.rgbrain.brianbot.domain.saci.core;
 
 public class CriardorMensagemDetalheAtraso {
 

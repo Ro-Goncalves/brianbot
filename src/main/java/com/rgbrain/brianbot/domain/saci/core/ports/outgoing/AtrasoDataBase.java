@@ -1,9 +1,9 @@
-package com.rgbrain.brianbot.domain.atraso.core.ports.outgoing;
+package com.rgbrain.brianbot.domain.saci.core.ports.outgoing;
 
 import java.util.List;
 
-import com.rgbrain.brianbot.domain.atraso.core.model.dados.DadosDetalheAtraso;
-import com.rgbrain.brianbot.domain.atraso.infrastructure.entity.Atraso;
+import com.rgbrain.brianbot.domain.saci.core.model.dados.DadosDetalheAtraso;
+import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Atraso;
 
 public interface AtrasoDataBase {
     List<Atraso> obterAtrasos();

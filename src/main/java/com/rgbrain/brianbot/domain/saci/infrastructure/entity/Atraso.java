@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.domain.atraso.infrastructure.entity;
+package com.rgbrain.brianbot.domain.saci.infrastructure.entity;
 
 import java.time.LocalDate;
 

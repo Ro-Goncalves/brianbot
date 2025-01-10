@@ -1,8 +1,8 @@
-package com.rgbrain.brianbot.domain.atraso.core.model.dados;
+package com.rgbrain.brianbot.domain.saci.core.model.dados;
 
 import java.util.List;
 
-import com.rgbrain.brianbot.domain.atraso.infrastructure.entity.Atraso;
+import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Atraso;
 
 public record DadosDetalheAtraso(
     Integer quantidadeParcelasAtraso,

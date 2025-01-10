@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.domain.atraso.application;
+package com.rgbrain.brianbot.domain.saci.application;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rgbrain.brianbot.domain.atraso.core.model.command.AtrasoComissionadoCommand;
-import com.rgbrain.brianbot.domain.atraso.core.model.dados.DadosConsorciadoAtrasos;
-import com.rgbrain.brianbot.domain.atraso.core.ports.incoming.ObterTodosAtrasos;
+import com.rgbrain.brianbot.domain.saci.core.model.command.AtrasoComissionadoCommand;
+import com.rgbrain.brianbot.domain.saci.core.model.dados.DadosConsorciadoAtrasos;
+import com.rgbrain.brianbot.domain.saci.core.ports.incoming.ObterTodosAtrasos;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

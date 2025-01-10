@@ -1,10 +1,10 @@
-package com.rgbrain.brianbot.domain.atraso.infrastructure;
+package com.rgbrain.brianbot.domain.saci.infrastructure;
 
 import java.util.List;
 
-import com.rgbrain.brianbot.domain.atraso.core.model.dados.DadosDetalheAtraso;
-import com.rgbrain.brianbot.domain.atraso.core.ports.outgoing.AtrasoDataBase;
-import com.rgbrain.brianbot.domain.atraso.infrastructure.entity.Atraso;
+import com.rgbrain.brianbot.domain.saci.core.model.dados.DadosDetalheAtraso;
+import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoDataBase;
+import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Atraso;
 
 import lombok.RequiredArgsConstructor;
 

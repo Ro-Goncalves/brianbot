@@ -2,7 +2,7 @@ package com.rgbrain.brianbot.domain.atraso;
 
 import java.util.List;
 
-import com.rgbrain.brianbot.domain.atraso.infrastructure.entity.Atraso;
+import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Atraso;
 
 public class AtrasoDados {
     public static List<Atraso> criarListaAtraso() {
