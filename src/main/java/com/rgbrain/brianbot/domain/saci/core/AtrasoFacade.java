@@ -1,5 +1,7 @@
 package com.rgbrain.brianbot.domain.saci.core;
 
+import static com.rgbrain.brianbot.domain.saci.core.CriardorMensagemWhatsApp.criarMensagemDetalheAtraso;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,27 +10,31 @@ import java.util.Map;
 import com.rgbrain.brianbot.domain.saci.core.model.command.AtrasoComissionadoCommand;
 import com.rgbrain.brianbot.domain.saci.core.model.dados.DadosConsorciadoAtrasos;
 import com.rgbrain.brianbot.domain.saci.core.model.dados.DadosCotaAtraso;
-import com.rgbrain.brianbot.domain.saci.core.ports.incoming.ObterDetalhesAtraso;
+import com.rgbrain.brianbot.domain.saci.core.model.dados.DadosDetalheAtraso;
+import com.rgbrain.brianbot.domain.saci.core.ports.incoming.NotificacoesAtraso;
 import com.rgbrain.brianbot.domain.saci.core.ports.incoming.ObterTodosAtrasos;
 import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoDataBase;
+import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoEventPublisher;
 import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Atraso;
 import com.rgbrain.brianbot.infrastructure.resposta.model.RespostaEvent;
 
-public class AtrasoFacade implements ObterTodosAtrasos, ObterDetalhesAtraso{
+public class AtrasoFacade implements ObterTodosAtrasos, NotificacoesAtraso{
 
     private final AtrasoDataBase atrasoDataBase;
+    private final AtrasoEventPublisher atrasoEventPublisher;
 
-    public AtrasoFacade(AtrasoDataBase atrasoDataBase) {
+    public AtrasoFacade(AtrasoDataBase atrasoDataBase, AtrasoEventPublisher atrasoEventPublisher) {
         this.atrasoDataBase = atrasoDataBase;
+        this.atrasoEventPublisher = atrasoEventPublisher;
     }
 
     @Override
     public List<DadosConsorciadoAtrasos> handle(AtrasoComissionadoCommand command) {
-        var todosAtrasos = atrasoDataBase.obterAtrasosComissionado(command.idComissionado());
+        var todosAtrasos = atrasoDataBase.obterAtrasosPorComissionado(command.idComissionado());
         Map<String, DadosConsorciadoAtrasos> dadosConsorciadoAtrasosMap = new HashMap<>();
         
         for (Atraso atraso : todosAtrasos) {
-            String nomeConsorciado = atraso.getNomeConsorciado();
+            String nomeConsorciado = atraso.getConsorciado().getNomeConsorciado();
             var dadosAtrasos = dadosConsorciadoAtrasosMap.getOrDefault(nomeConsorciado, new DadosConsorciadoAtrasos(atraso));           
 
             var dadosCotaAtraso = new DadosCotaAtraso(atraso);
@@ -41,16 +47,31 @@ public class AtrasoFacade implements ObterTodosAtrasos, ObterDetalhesAtraso{
     }
 
     @Override
-    public void obterDetalhesAtraso() {
-        var comissionados = atrasoDataBase.obterComissionado();
-        //var comissionados = todosAtrasos.stream().map(Atraso::getIdComissionado).distinct().toList();
+    public void notificarDetalhesAtraso() {
+        var todosAtrasos = atrasoDataBase.obterAtrasos();
+        var idsComissionados = todosAtrasos.stream()
+            .map(Atraso::getIdComissionado)
+            .distinct()
+            .toList();
 
-        comissionados.forEach(comissionado -> {
-            var detalheAtrasoComissionado = atrasoDataBase.obterAtrasosDetalhadoComissionado(comissionado.idComissionado());
+        idsComissionados.forEach(idComissionado -> {
+            var comissionado = todosAtrasos.stream()
+                .filter(atraso -> atraso.getIdComissionado() == idComissionado)
+                .findFirst()
+                .map(Atraso::getComissionado)
+                .get();
+
+            var cotasAtrasoComissionado = todosAtrasos.stream()
+                .filter(atraso -> atraso.getIdComissionado() == idComissionado)
+                .map(atraso -> new DadosCotaAtraso(atraso))
+                .toList();
+            
+            var detalheAtrasoComissionado = new DadosDetalheAtraso(cotasAtrasoComissionado);
             var respostaEvent = new RespostaEvent(
-                comissionado.whatsAppComissionado(),
-                ""
+                comissionado.getWhatsAppComissionado(),
+                criarMensagemDetalheAtraso(comissionado.getNomeComissionado() ,detalheAtrasoComissionado)
             );
+            atrasoEventPublisher.publicarRespostaEvent(respostaEvent);
         });
         
     }

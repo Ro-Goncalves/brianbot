@@ -17,17 +17,20 @@ import com.rgbrain.brianbot.domain.atraso.AtrasoDados;
 import com.rgbrain.brianbot.domain.saci.core.AtrasoFacade;
 import com.rgbrain.brianbot.domain.saci.core.model.command.AtrasoComissionadoCommand;
 import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoDataBase;
+import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoEventPublisher;
 
 public class AtrasoFacadeTest {
 
     private AtrasoDataBase atrasoDataBase;
+    private AtrasoEventPublisher atrasoEventPublisher;
 
     private AtrasoFacade atrasoFacade;
 
     @BeforeEach
     void setUp() throws Exception {
         atrasoDataBase = mock(AtrasoDataBase.class);
-        atrasoFacade = new AtrasoFacade(atrasoDataBase);
+        atrasoEventPublisher = mock(AtrasoEventPublisher.class);
+        atrasoFacade = new AtrasoFacade(atrasoDataBase, atrasoEventPublisher);
     }
 
     @Test
@@ -36,7 +39,7 @@ public class AtrasoFacadeTest {
         //Given
         var command = new AtrasoComissionadoCommand(1L);
         var atrasosComissionado = AtrasoDados.criarListaAtraso();
-        when(atrasoDataBase.obterAtrasosComissionado(Mockito.anyLong())).thenReturn(atrasosComissionado);
+        when(atrasoDataBase.obterAtrasosPorComissionado(Mockito.anyLong())).thenReturn(atrasosComissionado);
 
         //When
         var dadosConsorciadoAtrasos = atrasoFacade.handle(command);
