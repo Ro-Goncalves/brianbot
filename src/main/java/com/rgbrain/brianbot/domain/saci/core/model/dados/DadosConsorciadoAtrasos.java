@@ -14,18 +14,18 @@ public record DadosConsorciadoAtrasos (
 
     public DadosConsorciadoAtrasos(Atraso atraso, DadosCotaAtraso dadosAtrasoCota) {
         this(
-            atraso.getNomeConsorciado(),
-            atraso.getTelefoneConsorciado(),
-            atraso.getEmailConsorciado(),           
+            atraso.getConsorciado().getNomeConsorciado(),
+            atraso.getConsorciado().getWhatsAppConsorciado(),
+            atraso.getConsorciado().getEmailConsorciado(),           
             List.of(dadosAtrasoCota)
         );
     }
 
     public DadosConsorciadoAtrasos(Atraso atraso) {
         this(
-            atraso.getNomeConsorciado(),
-            atraso.getTelefoneConsorciado(),
-            atraso.getEmailConsorciado(),           
+            atraso.getConsorciado().getNomeConsorciado(),
+            atraso.getConsorciado().getWhatsAppConsorciado(),
+            atraso.getConsorciado().getEmailConsorciado(),           
             new ArrayList<DadosCotaAtraso>()
         );
     }
