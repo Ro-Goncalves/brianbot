@@ -14,12 +14,12 @@ public class AtrasoDataBaseAdapter implements AtrasoDataBase {
     private final AtrasoRepository atrasoRepository;
     
     @Override
-    public List<Atraso> obterAtrasos(Long idComissionado) {
+    public List<Atraso> obterAtrasosComissionado(Long idComissionado) {
         return atrasoRepository.findByIdComissionado(idComissionado);
     }
 
     @Override
-    public DadosDetalheAtraso obterAtrasosDetalhado(Long idComissionado) {
+    public DadosDetalheAtraso obterAtrasosDetalhadoComissionado(Long idComissionado) {
         var atrasos = atrasoRepository.findByIdComissionado(idComissionado);
         var atrasoDetalhado = new DadosDetalheAtraso(atrasos);
         

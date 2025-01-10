@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.rgbrain.brianbot.domain.atraso.AtrasoDados;
-import com.rgbrain.brianbot.domain.atraso.core.model.command.ObterTodosAtrasosCommand;
+import com.rgbrain.brianbot.domain.atraso.core.model.command.AtrasoComissionadoCommand;
 import com.rgbrain.brianbot.domain.atraso.core.ports.outgoing.AtrasoDataBase;
 
 public class AtrasoFacadeTest {
@@ -33,9 +33,9 @@ public class AtrasoFacadeTest {
     @DisplayName("Obter Todos Atrasos")
     void quandoLidarComObterTodosAtrasosCommand_deveRetornarListaDeDadosConsorciadoAtrasos() {
         //Given
-        var command = new ObterTodosAtrasosCommand(1L);
+        var command = new AtrasoComissionadoCommand(1L);
         var atrasosComissionado = AtrasoDados.criarListaAtraso();
-        when(atrasoDataBase.obterAtrasos(Mockito.anyLong())).thenReturn(atrasosComissionado);
+        when(atrasoDataBase.obterAtrasosComissionado(Mockito.anyLong())).thenReturn(atrasosComissionado);
 
         //When
         var dadosConsorciadoAtrasos = atrasoFacade.handle(command);
