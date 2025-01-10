@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rgbrain.brianbot.domain.atraso.core.model.command.ObterTodosAtrasosCommand;
+import com.rgbrain.brianbot.domain.atraso.core.model.command.AtrasoComissionadoCommand;
 import com.rgbrain.brianbot.domain.atraso.core.model.dados.DadosConsorciadoAtrasos;
 import com.rgbrain.brianbot.domain.atraso.core.ports.incoming.ObterTodosAtrasos;
 
@@ -26,7 +26,7 @@ public class AtrasoController {
     private final ObterTodosAtrasos obterTodosAtrasos;
 
     @GetMapping("")
-    public ResponseEntity<List<DadosConsorciadoAtrasos>> obterTodosAtrasos(@RequestBody @Valid ObterTodosAtrasosCommand command) {
+    public ResponseEntity<List<DadosConsorciadoAtrasos>> handle(@RequestBody @Valid AtrasoComissionadoCommand command) {
         var todosAtrasos = obterTodosAtrasos.handle(command);
         return ResponseEntity.ok(todosAtrasos);
     }
