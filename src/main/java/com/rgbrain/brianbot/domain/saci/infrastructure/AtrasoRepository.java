@@ -11,10 +11,10 @@ import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Atraso;
 
 @Repository
 public interface AtrasoRepository extends JpaRepository<Atraso, Long> {
-    List<Atraso> findByIdComissionado(Long idComissionado);   
+    List<Atraso> findByComissionado_IdComissionado(Long ID_Comissionado);   
     
     @Query(value = """
-        SELECT DISTINCT a.idComissionado
+        SELECT DISTINCT a.comissionado.idComissionado
         FROM Atraso a
     """)
     List<AtrasoComissionado> localizarComissionados(); 
