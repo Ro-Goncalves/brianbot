@@ -3,7 +3,7 @@ package com.rgbrain.brianbot.domain.saci.infrastructure;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoEventPublisher;
-import com.rgbrain.brianbot.infrastructure.resposta.model.RespostaEvent;
+import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.RespostaEvent;
 
 import lombok.RequiredArgsConstructor;
 

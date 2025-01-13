@@ -16,7 +16,7 @@ import com.rgbrain.brianbot.domain.saci.core.ports.incoming.ObterTodosAtrasos;
 import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoDataBase;
 import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoEventPublisher;
 import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Atraso;
-import com.rgbrain.brianbot.infrastructure.resposta.model.RespostaEvent;
+import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.RespostaEvent;
 
 public class AtrasoFacade implements ObterTodosAtrasos, NotificacoesAtraso{
 

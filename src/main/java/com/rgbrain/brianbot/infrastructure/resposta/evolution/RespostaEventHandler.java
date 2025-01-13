@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.infrastructure.resposta;
+package com.rgbrain.brianbot.infrastructure.resposta.evolution;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.rgbrain.brianbot.infrastructure.resposta.model.RespostaEvent;
 
 @Component
 public class RespostaEventHandler {

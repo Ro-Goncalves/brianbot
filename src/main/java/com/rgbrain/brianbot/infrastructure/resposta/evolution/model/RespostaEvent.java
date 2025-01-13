@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.infrastructure.resposta.model;
+package com.rgbrain.brianbot.infrastructure.resposta.evolution.model;
 
 public record RespostaEvent(
     String instancia,
