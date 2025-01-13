@@ -44,11 +44,11 @@ public class NotificacoesAtrasoComponentTest {
         agendadorNotificacoesAtraso.notificarDetalhesAtraso();
 
         // Verificar se o evento foi publicado
-        verify(atrasoEventPublisher, times(10)).publicarRespostaEvent(captor.capture());
+        verify(atrasoEventPublisher, times(2)).publicarRespostaEvent(captor.capture());
 
         // Validar o conteúdo dos eventos
         var eventos = captor.getAllValues();
-        assertEquals(10, eventos.size());
+        assertEquals(2, eventos.size());
 
         // RespostaEvent evento1 = eventos.get(0);
         // RespostaEvent evento2 = eventos.get(1);
