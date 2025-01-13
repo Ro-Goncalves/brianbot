@@ -39,6 +39,10 @@ public class Atraso {
     @JoinColumn(name = "ID_Consorciado")
     private Consorciado consorciado;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_Cota")
+    private Cota cota;
+    
     @Column(name = "QTD_Parcelas_Atraso")
     private Integer quantidadeParcelasAtraso;
 
@@ -46,31 +50,9 @@ public class Atraso {
     private Double valorAtraso;
 
     @Column(name = "DT_Atraso")
-    private LocalDate dataAtraso;
-    
-    @Column(name = "CD_Grupo")
-    private String codigoGrupo;
-    
-    @Column(name = "CD_Cota")
-    private String codigoCota;
-    
-    @Column(name = "Versao")
-    private String versao;
-
-    @Column(name = "VL_Credito")
-    private Double valorCredito;
-
-    @Column(name = "VL_Parcela")
-    private Double valorParcela;
-
-    @Column(name = "DT_Vencimento")
-    private LocalDate dataVencimento;
-
-    @Column(name = "NM_Bem")
-    private String nomeBem;
+    private LocalDate dataAtraso;   
 
     public Long getIdComissionado() {
         return comissionado.getIdComissionado();
     }
-
 }
