@@ -13,7 +13,7 @@ public class AgendadorNotificacoesAtraso {
     @Qualifier("NotificacoesAtraso")
     private final NotificacoesAtraso notificacoesAtraso;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 15 * 1000)
     public void notificarDetalhesAtraso() {
         notificacoesAtraso.notificarDetalhesAtraso();
     }
