@@ -5,7 +5,7 @@ CREATE TABLE atrasos (
     ID_Cota             INTEGER     NOT NULL,
     QTD_Parcelas_Atraso INTEGER     NOT NULL,
     VL_Atraso           REAL        NOT NULL, 
-    DT_Atraso           DATETIME    NOT NULL
+    DT_Atraso           DATETIME    NOT NULL,
 
     FOREIGN KEY (ID_Comissionado) REFERENCES comissionados (ID_Comissionado),
     FOREIGN KEY (ID_Consorciado)  REFERENCES consorciados  (ID_Consorciado),
