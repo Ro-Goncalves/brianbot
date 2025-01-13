@@ -153,7 +153,7 @@
 				<configuration>
 					<reportsDirectory>${surefire.and.failsafe.report.dir}</reportsDirectory>
 					<includes>
-						<include>**/*ITCase.java</include>
+						<include>**/*IntegrationTest.java</include>
 						<include>**/*ComponentTest.java</include>
 					</includes>
 				</configuration>
@@ -216,47 +216,6 @@
 	</build>
 
 	<profiles>
-		
-		<profile>
-			<id>component-test</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.6.0</version>
-						<executions>
-							<execution>
-								<id>add-component-test-sources</id>
-								<phase>generate-test-sources</phase>
-								<goals>
-									<goal>add-test-source</goal>
-								</goals>
-								<configuration>
-									<sources>
-										<source>src/component-test/java</source>
-									</sources>
-								</configuration>
-							</execution>
-							<execution>
-								<id>add-component-test-resources</id>
-								<phase>generate-test-resources</phase>
-								<goals>
-									<goal>add-test-resource</goal>
-								</goals>
-								<configuration>
-									<resources>
-										<resource>
-											<directory>src/component-test/resources</directory>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 
 		<profile>
 			<id>sonar</id>
