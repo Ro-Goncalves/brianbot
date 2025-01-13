@@ -45,6 +45,13 @@ public class DadosMensagem {
         private Long messageTimestamp;
         private String instanceId;
         private String source;
+        @Override
+        public String toString() {
+            return "MessageData [key=" + key + ", pushName=" + pushName + ", status=" + status + ", message=" + message
+                    + ", messageType=" + messageType + ", messageTimestamp=" + messageTimestamp + ", instanceId="
+                    + instanceId + ", source=" + source + "]";
+        }
+        
     }
     
     @Embeddable
@@ -55,6 +62,10 @@ public class DadosMensagem {
         private String remoteJid;
         private Boolean fromMe;
         private String id;
+        @Override
+        public String toString() {
+            return "MessageKey [remoteJid=" + remoteJid + ", fromMe=" + fromMe + ", id=" + id + "]";
+        }
     }
     
     @Embeddable
@@ -64,5 +75,17 @@ public class DadosMensagem {
     @Builder
     public static class MessageContent {
         private String conversation;
+
+        @Override
+        public String toString() {
+            return "MessageContent [conversation=" + conversation + "]";
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "DadosMensagem [idMensagem=" + idMensagem + ", event=" + event + ", instance=" + instance + ", data="
+                + data + ", destination=" + destination + ", date_time=" + date_time + ", sender=" + sender
+                + ", server_url=" + server_url + ", apikey=" + apikey + "]";
     }
 }
