@@ -16,15 +16,15 @@ public record DadosCotaAtraso (
 
     public DadosCotaAtraso(Atraso atraso) {
         this(
-            atraso.getCodigoGrupo(), 
-            atraso.getCodigoCota(), 
-            atraso.getVersao(), 
-            atraso.getValorCredito(), 
-            atraso.getValorParcela(), 
+            atraso.getCota().getCodigoGrupo(), 
+            atraso.getCota().getCodigoCota(), 
+            atraso.getCota().getVersao(), 
+            atraso.getCota().getValorCredito(), 
+            atraso.getCota().getValorParcela(), 
             atraso.getValorAtraso(),
             atraso.getQuantidadeParcelasAtraso(),
-            atraso.getNomeBem(),
-            atraso.getDataVencimento().getDayOfMonth()
+            atraso.getCota().getNomeBem(),
+            atraso.getCota().getDataVencimento().getDayOfMonth()
         );
     }
 
