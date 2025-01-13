@@ -19,6 +19,6 @@ public class AtrasoDataBaseAdapter implements AtrasoDataBase {
 
     @Override
     public List<Atraso> obterAtrasosPorComissionado(Long idComissionado) {
-        return atrasoRepository.findByIdComissionado(idComissionado);
+        return atrasoRepository.findByComissionado_IdComissionado(idComissionado);
     }  
 }
