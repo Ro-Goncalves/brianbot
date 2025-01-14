@@ -1,4 +1,4 @@
--- DELETE FROM consorciados;
--- DELETE FROM comissionados;
+DELETE FROM consorciados;
+DELETE FROM comissionados;
 DELETE FROM cotas;
--- DELETE FROM atrasos;
+DELETE FROM atrasos;
