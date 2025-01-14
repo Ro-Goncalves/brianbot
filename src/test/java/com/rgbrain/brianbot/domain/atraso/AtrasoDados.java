@@ -13,7 +13,7 @@ public class AtrasoDados {
                 .consorciado(
                     Consorciado.builder()
                         .nomeConsorciado("Consorciado 01")
-                        .whatsAppConsorciado("Telefone 01")
+                        .whatsappConsorciado("Telefone 01")
                         .emailConsorciado("Email 01")
                         .build())
                 .cota(
@@ -30,7 +30,7 @@ public class AtrasoDados {
                 .consorciado(
                     Consorciado.builder()
                         .nomeConsorciado("Consorciado 02")
-                        .whatsAppConsorciado("Telefone 02")
+                        .whatsappConsorciado("Telefone 02")
                         .emailConsorciado("Email 02")
                         .build()) 
                 .cota(
@@ -47,7 +47,7 @@ public class AtrasoDados {
                 .consorciado(
                     Consorciado.builder()
                         .nomeConsorciado("Consorciado 02")
-                        .whatsAppConsorciado("Telefone 02")
+                        .whatsappConsorciado("Telefone 02")
                         .emailConsorciado("Email 02")
                         .build()) 
                 .cota(
