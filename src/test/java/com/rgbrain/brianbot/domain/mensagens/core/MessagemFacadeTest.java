@@ -21,8 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem.Comando;
 import com.rgbrain.brianbot.domain.mensagens.core.model.event.ComandoEvent;
-import com.rgbrain.brianbot.domain.mensagens.core.model.event.RespostaEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.port.outgoing.MensagemEventPublisher;
+import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.RespostaEvent;
 
 @ExtendWith(MockitoExtension.class)
 public class MessagemFacadeTest {

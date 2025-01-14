@@ -14,28 +14,32 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.rgbrain.brianbot.domain.atraso.AtrasoDados;
-import com.rgbrain.brianbot.domain.atraso.core.model.command.ObterTodosAtrasosCommand;
-import com.rgbrain.brianbot.domain.atraso.core.ports.outgoing.AtrasoDataBase;
+import com.rgbrain.brianbot.domain.saci.core.AtrasoFacade;
+import com.rgbrain.brianbot.domain.saci.core.model.command.AtrasoComissionadoCommand;
+import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoDataBase;
+import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoEventPublisher;
 
 public class AtrasoFacadeTest {
 
     private AtrasoDataBase atrasoDataBase;
+    private AtrasoEventPublisher atrasoEventPublisher;
 
     private AtrasoFacade atrasoFacade;
 
     @BeforeEach
     void setUp() throws Exception {
         atrasoDataBase = mock(AtrasoDataBase.class);
-        atrasoFacade = new AtrasoFacade(atrasoDataBase);
+        atrasoEventPublisher = mock(AtrasoEventPublisher.class);
+        atrasoFacade = new AtrasoFacade(atrasoDataBase, atrasoEventPublisher);
     }
 
     @Test
     @DisplayName("Obter Todos Atrasos")
     void quandoLidarComObterTodosAtrasosCommand_deveRetornarListaDeDadosConsorciadoAtrasos() {
         //Given
-        var command = new ObterTodosAtrasosCommand(1L);
+        var command = new AtrasoComissionadoCommand(1L);
         var atrasosComissionado = AtrasoDados.criarListaAtraso();
-        when(atrasoDataBase.obterAtrasos(Mockito.anyLong())).thenReturn(atrasosComissionado);
+        when(atrasoDataBase.obterAtrasosPorComissionado(Mockito.anyLong())).thenReturn(atrasosComissionado);
 
         //When
         var dadosConsorciadoAtrasos = atrasoFacade.handle(command);

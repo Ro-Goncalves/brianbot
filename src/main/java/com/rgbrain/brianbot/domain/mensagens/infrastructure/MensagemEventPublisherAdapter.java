@@ -4,8 +4,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import com.rgbrain.brianbot.domain.mensagens.core.model.event.ComandoEvent;
-import com.rgbrain.brianbot.domain.mensagens.core.model.event.RespostaEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.port.outgoing.MensagemEventPublisher;
+import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.RespostaEvent;
 
 import lombok.RequiredArgsConstructor;
 
