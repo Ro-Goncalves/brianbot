@@ -1,0 +1,16 @@
+Olá *%s*,
+Segue os detalhes dos Atrasos em sua carteira.
+
+Quantidade de Parcelas Atrasada:  %d
+Valor Total de Parcelas Atrasada: R$ %,.2f
+Valor Total de Crédito Atrasado:  R$ %,.2f
+
+*Quantidade Atrasos Por Bem*
+Imóveis:  %d
+Veículos: %d
+Serviços: %d
+
+*Quantidade Atrasos Por Vencimento*
+Vencimento 8:  %d
+Vencimento 16: %d
+Vencimento 20: %d
