@@ -68,7 +68,7 @@ public class AtrasoFacade implements ObterTodosAtrasos, NotificacoesAtraso{
             
             var detalheAtrasoComissionado = new DadosDetalheAtraso(cotasAtrasoComissionado);
             var respostaEvent = new RespostaEvent(
-                comissionado.getWhatsAppComissionado(),
+                comissionado.getWhatsappComissionado(),
                 criarMensagemDetalheAtraso(comissionado.getNomeComissionado() ,detalheAtrasoComissionado)
             );
             atrasoEventPublisher.publicarRespostaEvent(respostaEvent);

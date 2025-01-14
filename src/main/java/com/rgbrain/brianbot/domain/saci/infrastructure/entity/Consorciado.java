@@ -32,8 +32,8 @@ public class Consorciado {
     @Column(name = "NM_Consorciado")
     private String nomeConsorciado;   
 
-    @Column(name = "WhatsApp_Consorciado")
-    private String whatsAppConsorciado;
+    @Column(name = "Whatsapp_Consorciado")
+    private String whatsappConsorciado;
 
     @Column(name = "Email_Consorciado")
     private String emailConsorciado;

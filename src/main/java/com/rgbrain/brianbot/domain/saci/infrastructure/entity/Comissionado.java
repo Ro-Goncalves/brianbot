@@ -32,7 +32,7 @@ public class Comissionado {
     @Column(name = "NM_Comissionado")
     private String nomeComissionado;   
 
-    @Column(name = "WhatsApp_Comissionado")
-    private String whatsAppComissionado;
+    @Column(name = "Whatsapp_Comissionado")
+    private String whatsappComissionado;
     
 }

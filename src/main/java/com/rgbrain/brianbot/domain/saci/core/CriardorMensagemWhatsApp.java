@@ -7,9 +7,9 @@ import com.rgbrain.brianbot.domain.saci.core.model.dados.DadosDetalheAtraso;
 public class CriardorMensagemWhatsApp {
 
     @Value("${saci.mensagem.detalhe.atraso}")
-    private static String templateMensagemDetalheAtraso;
+    private String templateMensagemDetalheAtraso;
 
-    public static String criarMensagemDetalheAtraso(String nomeComissionado, DadosDetalheAtraso dadosDetalheAtraso) {
+    public String criarMensagemDetalheAtraso(String nomeComissionado, DadosDetalheAtraso dadosDetalheAtraso) {
         return templateMensagemDetalheAtraso.formatted(
             nomeComissionado,
             dadosDetalheAtraso.quantidadeParcelasAtraso(),
