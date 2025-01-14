@@ -19,9 +19,9 @@ public record DadosDetalheAtraso(
             cotasAtrasoComissionado.stream().mapToInt(DadosCotaAtraso::quantidadeParcelasAtraso).sum(),
             cotasAtrasoComissionado.stream().mapToDouble(DadosCotaAtraso::valorParcela).sum(),
             cotasAtrasoComissionado.stream().mapToDouble(DadosCotaAtraso::valorCredito).sum(),
-            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.nomeBem().equals("Imovel")).count(),
-            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.nomeBem().equals("Veiculo")).count(),
-            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.nomeBem().equals("Servico")).count(),
+            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.nomeBem().equals("Imóvel")).count(),
+            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.nomeBem().equals("Veículo")).count(),
+            (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.nomeBem().equals("Serviço")).count(),
             (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.diaVencimanto() == 8).count(),
             (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.diaVencimanto() == 16).count(),
             (int) cotasAtrasoComissionado.stream().filter(dadosCotaAtraso -> dadosCotaAtraso.diaVencimanto() == 20).count()
