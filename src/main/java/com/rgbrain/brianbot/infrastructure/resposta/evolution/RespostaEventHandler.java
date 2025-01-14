@@ -15,19 +15,20 @@ public class RespostaEventHandler {
     private static final Logger logger = LoggerFactory.getLogger(RespostaEventHandler.class);
 
     @Value("${evolution.url}")
-    private static String baseUrl;
+    private String baseUrl;
 
     @Value("${evolution.apikey}")
-    private static String apiKey;
+    private String apiKey;
     
     @Value("${evolution.uri}")
-    private static String uri;
+    private String uri;
 
     @EventListener
     public void handle(RespostaEvent event) {
         logger.debug("Evento Resposta recebido: {}", event);
-
+       
         var body = "{\"number\": \"%s\",\"text\": \"%s\"}".formatted(event.enviarPara(), event.mensagem());
+        logger.debug("body: {}", body);
 
         WebClient webClient = WebClient.builder()
             .baseUrl(baseUrl)
