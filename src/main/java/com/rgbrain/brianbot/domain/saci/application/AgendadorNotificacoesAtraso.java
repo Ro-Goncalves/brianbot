@@ -19,7 +19,7 @@ public class AgendadorNotificacoesAtraso {
     @Qualifier("NotificacoesAtraso")
     private final NotificacoesAtraso notificacoesAtraso;
 
-    @Scheduled(fixedDelay = 15 * 1000)
+    @Scheduled(fixedDelay = 60 * 1000)
     public void notificarDetalhesAtraso() {
         logger.info("Iniciando o Agendador de Notificações de Atraso");
         notificacoesAtraso.notificarDetalhesAtraso();
