@@ -1,12 +1,9 @@
 package com.rgbrain.brianbot.domain.mensagens.core;
 
-import java.util.Arrays;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rgbrain.brianbot.domain.mensagens.core.model.Dominios;
-import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
 import com.rgbrain.brianbot.domain.mensagens.core.model.command.MensagemAjudaCommand;
 import com.rgbrain.brianbot.domain.mensagens.core.model.command.MensagemDominioValidoCommand;
 import com.rgbrain.brianbot.domain.mensagens.core.model.event.ComandoEvent;
@@ -37,29 +34,27 @@ public class MessagemFacade implements MensagemAjuda, MensagemDominioValido {
 
     @Override
     public void handle(MensagemAjudaCommand command) {
-        // logger.info("Dominio Ausente ou Inválido: {}", mensagem.getComando().getDominio());
+        logger.info("Dominio Ausente ou Inválido: {}", command.getDominio());
 
-        // var mensagemResposta = """
-        // Olá %s!
-        // Será um prazer *INOMINÁVEL* lhe ajudar! 🕺.
-        // Sou o */BrianBot*, seu assistente virtual mais charmoso, engenhoso e (modéstia à parte) maravilhoso. 💁‍♂️\n
-        // Atualmente, eu posso ajudar com estas funcionalidades incríveis:
-        // %s\n
-        // Se precisar de detalhes sobre um domínio específico, basta dizer:
-        // */BrianBot [domínio]*\n
-        // *PREPARE-SE PARA MINHA SABEDORIA (E MINHAS PIADAS RUINS), E SEJA BEM-VINDO AO MUNDO DO BRIANBOT! ✨*\n
-        // """.formatted(
-        //     mensagem.getNomeRemetente(),
-        //     Dominios.dominiosDisponiveis()
-        // );
+        var mensagemResposta = """
+        Olá %s!
+        Será um prazer *INOMINÁVEL* lhe ajudar! 🕺.
+        Sou o */BrianBot*, seu assistente virtual mais charmoso, engenhoso e (modéstia à parte) maravilhoso. 💁‍♂️\n
+        Atualmente, eu posso ajudar com estas funcionalidades incríveis:
+        %s\n
+        Se precisar de detalhes sobre um domínio específico, basta dizer:
+        */BrianBot [domínio]*\n
+        *PREPARE-SE PARA MINHA SABEDORIA (E MINHAS PIADAS RUINS), E SEJA BEM-VINDO AO MUNDO DO BRIANBOT! ✨*\n
+        """.formatted(
+            command.getNomeRemetente(),
+            Dominios.dominiosDisponiveis()
+        );
 
-        // var evento = new RespostaEvent(
-        //     mensagem.getInstancia(), 
-        //     mensagem.getIdRemoto(), 
-        //     mensagemResposta,
-        //     mensagem.getIdMensagem()
-        // );
-        // logger.debug("Publicando evento para Resposta: {}", evento);
-        // mensagemEventPublisher.publicar(evento);
+        var evento = new EnviarTextoEvent(            
+            command.getEnviarMensagemPara(), 
+            mensagemResposta
+        );
+        logger.debug("Publicando evento para Resposta: {}", evento);
+        mensagemEventPublisher.publicar(evento);
     }
 }
