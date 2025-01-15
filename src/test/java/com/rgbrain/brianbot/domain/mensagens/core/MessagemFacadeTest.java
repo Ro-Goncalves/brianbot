@@ -22,7 +22,7 @@ import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem.Comando;
 import com.rgbrain.brianbot.domain.mensagens.core.model.event.ComandoEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.port.outgoing.MensagemEventPublisher;
-import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.RespostaEvent;
+import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.EnviarTextoEvent;
 
 @ExtendWith(MockitoExtension.class)
 public class MessagemFacadeTest {
@@ -66,13 +66,13 @@ public class MessagemFacadeTest {
                 .comando(null)
                 .build();
 
-        doNothing().when(mensagemEventPublisher).publicar(Mockito.any(RespostaEvent.class));
+        doNothing().when(mensagemEventPublisher).publicar(Mockito.any(EnviarTextoEvent.class));
        
         // when
         //facade.postMessagesUpsert(mensagem);
 
         // then
-        var captor = ArgumentCaptor.forClass(RespostaEvent.class);
+        var captor = ArgumentCaptor.forClass(EnviarTextoEvent.class);
         verify(mensagemEventPublisher).publicar(captor.capture());
         verifyNoMoreInteractions(mensagemEventPublisher);
 
@@ -95,13 +95,13 @@ public class MessagemFacadeTest {
                 .isAtivacao(Boolean.TRUE)
                 //.comando(Mensagem.Comando.builder().comando("/BrianBot").build())
                 .build();
-        doNothing().when(mensagemEventPublisher).publicar(Mockito.any(RespostaEvent.class));
+        doNothing().when(mensagemEventPublisher).publicar(Mockito.any(EnviarTextoEvent.class));
 
         // when
         //facade.postMessagesUpsert(mensagem);
 
         // then
-        var captor = ArgumentCaptor.forClass(RespostaEvent.class);
+        var captor = ArgumentCaptor.forClass(EnviarTextoEvent.class);
         verify(mensagemEventPublisher).publicar(captor.capture());
         verifyNoMoreInteractions(mensagemEventPublisher);
 

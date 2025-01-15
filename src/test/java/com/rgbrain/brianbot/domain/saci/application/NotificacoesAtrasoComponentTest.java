@@ -21,7 +21,7 @@ import org.springframework.test.context.jdbc.Sql;
 import com.rgbrain.brianbot.domain.saci.core.AtrasoFacade;
 import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoDataBase;
 import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoEventPublisher;
-import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.RespostaEvent;
+import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.EnviarTextoEvent;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -47,7 +47,7 @@ public class NotificacoesAtrasoComponentTest {
     @Sql({"/01_insert-consorciados.sql", "/02_insert-comissionados.sql", "/03_insert-cotas.sql", "/04_insert-atrasos.sql" })
     @Sql(scripts = "/00_limpar-base.sql", executionPhase = AFTER_TEST_METHOD)
     void deveAgendarNotificacaoAtraso() {       
-        ArgumentCaptor<RespostaEvent> captor = ArgumentCaptor.forClass(RespostaEvent.class);
+        ArgumentCaptor<EnviarTextoEvent> captor = ArgumentCaptor.forClass(EnviarTextoEvent.class);
         
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {            
             verify(atrasoEventPublisher, times(2)).publicarRespostaEvent(captor.capture());

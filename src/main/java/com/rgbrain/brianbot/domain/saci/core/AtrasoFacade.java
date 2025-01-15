@@ -16,7 +16,7 @@ import com.rgbrain.brianbot.domain.saci.core.ports.incoming.ObterTodosAtrasos;
 import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoDataBase;
 import com.rgbrain.brianbot.domain.saci.core.ports.outgoing.AtrasoEventPublisher;
 import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Atraso;
-import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.RespostaEvent;
+import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.EnviarTextoEvent;
 
 public class AtrasoFacade implements ObterTodosAtrasos, NotificacoesAtraso{
 
@@ -67,7 +67,7 @@ public class AtrasoFacade implements ObterTodosAtrasos, NotificacoesAtraso{
                 .toList();
             
             var detalheAtrasoComissionado = new DadosDetalheAtraso(cotasAtrasoComissionado);
-            var respostaEvent = new RespostaEvent(
+            var respostaEvent = new EnviarTextoEvent(
                 comissionado.getWhatsappComissionado(),
                 criarMensagemDetalheAtraso(comissionado.getNomeComissionado() ,detalheAtrasoComissionado)
             );

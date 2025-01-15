@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.rgbrain.brianbot.domain.mensagens.core.model.event.ComandoEvent;
 import com.rgbrain.brianbot.domain.mensagens.core.port.outgoing.MensagemEventPublisher;
-import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.RespostaEvent;
+import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.EnviarTextoEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +21,7 @@ public class MensagemEventPublisherAdapter implements MensagemEventPublisher {
     }
 
     @Override
-    public void publicar(RespostaEvent envet) {
+    public void publicar(EnviarTextoEvent envet) {
         eventPublisher.publishEvent(envet);
     }
 }
