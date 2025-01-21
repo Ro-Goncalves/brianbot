@@ -22,6 +22,7 @@ public class AgendadorNotificacoesAtraso {
     @Scheduled(fixedDelay = 60 * 1000)
     public void notificarDetalhesAtraso() {
         logger.info("Iniciando o Agendador de Notificações de Atraso");
-        notificacoesAtraso.notificarDetalhesAtraso();
+        //notificacoesAtraso.notificarDetalhesAtraso();
+        logger.info("Finalizando o Agendador de Notificações de Atraso");
     }
 }
