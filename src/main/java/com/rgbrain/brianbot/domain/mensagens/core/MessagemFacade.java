@@ -40,7 +40,7 @@ public class MessagemFacade implements MensagemAjuda, MensagemDominioValido {
         Olá %s!
         Será um prazer *INOMINÁVEL* lhe ajudar! 🕺.
         Sou o */BrianBot*, seu assistente virtual mais charmoso, engenhoso e (modéstia à parte) maravilhoso. 💁‍♂️\n
-        Atualmente, eu posso ajudar com estas funcionalidades incríveis:
+        Atualmente, eu posso ajudar com estas funcionalidades incríveis:\n
         %s\n
         Se precisar de detalhes sobre um domínio específico, basta dizer:
         */BrianBot [domínio]*\n
