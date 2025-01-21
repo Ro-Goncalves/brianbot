@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -46,24 +48,24 @@ public class Mensagem {
     @Transient
     private Comando comando;
 
-    public Mensagem(DadosMensagem dadosMensagem) {
-        this.idMensagem = dadosMensagem.getData().getKey().getId();
-        this.evento = dadosMensagem.getEvent();
-        this.instancia = dadosMensagem.getInstance();
-        this.idRemoto = dadosMensagem.getData().getKey().getRemoteJid();
-        this.enviadoPorMim = dadosMensagem.getData().getKey().getFromMe();
-        this.nomeRemetente = dadosMensagem.getData().getPushName();
-        this.status = dadosMensagem.getData().getStatus();
-        this.mensagem = dadosMensagem.getData().getMessage().getConversation();
-        this.tipoMensagem = dadosMensagem.getData().getMessageType();
-        this.timestampMensagem = dadosMensagem.getData().getMessageTimestamp();
-        this.idInstancia = dadosMensagem.getData().getInstanceId();
-        this.origem = dadosMensagem.getData().getSource();
+    public Mensagem(JsonNode request) {       
+        this.idMensagem = request.get("data").get("key").get("id").asText();
+        this.evento = request.get("event").asText();
+        this.instancia = request.get("instance").asText();  
+        this.idRemoto = request.get("data").get("key").get("remoteJid").asText();
+        this.enviadoPorMim = request.get("data").get("key").get("fromMe").asBoolean();
+        this.nomeRemetente = request.get("data").get("pushName").asText();
+        this.status = request.get("data").get("status").asText();
+        this.mensagem = request.get("data").get("message").get("conversation").asText();
+        this.tipoMensagem = request.get("data").get("messageType").asText();
+        this.timestampMensagem = request.get("data").get("messageTimestamp").asLong();
+        this.idInstancia = request.get("data").get("instanceId").asText();
+        this.origem = request.get("data").get("source").asText();
         this.isAtivacao = Boolean.FALSE;
 
         processarComando(this.mensagem);
     }
-
+    
     private void processarComando(String mensagem) {
         if (!mensagem.startsWith(ATIVACAO)) {
             this.isAtivacao = Boolean.FALSE;
