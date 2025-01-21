@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rgbrain.brianbot.domain.mensagens.core.model.DadosMensagem;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.rgbrain.brianbot.domain.mensagens.core.model.Mensagem;
 import com.rgbrain.brianbot.domain.mensagens.core.model.command.MensagemAjudaCommand;
 import com.rgbrain.brianbot.domain.mensagens.core.model.command.MensagemDominioValidoCommand;
@@ -31,10 +31,10 @@ public class MensagemController {
     private final MensagemDominioValido mensagemDominioValido;
 
     @PostMapping("/messages-upsert")
-    public void messagesUpsert(@RequestBody DadosMensagem dadosMensagem) {       
-        logger.debug("DadosMensagem: {}", dadosMensagem);
+    public void messagesUpsert(@RequestBody JsonNode request) {       
+        logger.debug("Recebendo mensagem: {}", request);
         
-        var mensagem = new Mensagem(dadosMensagem);
+        var mensagem = new Mensagem(request);
 
         if (!mensagem.getIsAtivacao()) {
             logger.debug("Mensagem não é comando de ativação");
