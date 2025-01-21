@@ -26,3 +26,13 @@ Content-Type: application/json
     "server_url": "http://localhost:8081",
     "apikey": "531C85A75A31-4A7E-8921-1938A03742CD"
 }
+
+###
+POST http://localhost:8081/message/sendText/BrianBotTest
+Content-Type: application/json
+apikey:jxSGRK9uKS2r1AYSaLO2uxHet
+
+{
+    "number": "5543984412362",
+    "text": "teste de envio"   
+}
