@@ -3,7 +3,7 @@ package com.rgbrain.brianbot.domain.clima.core.model;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import com.rgbrain.brianbot.domain.mensagens.core.model.Dominios;
+import com.rgbrain.brianbot.infrastructure.Dominios;
 
 public enum ClimaAcoes {
     AJUDAR("📚✍️", "Ajudar", "Eu sou tipo aquele professor chato, mas sem a chatice que chateia! Quer arrasar na concordência e impressionar no português? Deixe comigo!"),
