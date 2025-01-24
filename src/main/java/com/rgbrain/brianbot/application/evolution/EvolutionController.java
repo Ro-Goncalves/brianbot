@@ -48,7 +48,7 @@ public class EvolutionController {
         try {
             var templateMensagem = 
                 new String(this.getClass()
-                    .getResourceAsStream("/template/mensagem/brian_bot_mensagem_ajuda.txt")
+                    .getResourceAsStream("/templates/mensagem/brian_bot_mensagem_ajuda.txt")
                     .readAllBytes());
 
             var mensagemResposta = templateMensagem.formatted(

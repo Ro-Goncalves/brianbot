@@ -31,8 +31,7 @@ public class AdvisorGateway {
     private ObjectMapper objectMapper;
 
     // @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 5 * 1000))
-    public ResponsePrevisaoClima obterPrevisaoClima() {
-        log.info("Devo ser implementado");
+    public ResponsePrevisaoClima obterPrevisaoClima() {       
         try {            
             var advisorToken = System.getenv("ADVISOR_API_TOKEN");
 

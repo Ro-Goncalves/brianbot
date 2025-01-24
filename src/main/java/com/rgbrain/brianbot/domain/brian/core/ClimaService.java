@@ -27,11 +27,10 @@ public class ClimaService {
     @Autowired
     private OpenAiChatModel chatModel;
    
-    public void executar(ClimaCommand climaCommand) {
-       log.info("Devo ser implementado");
+    public void executar(ClimaCommand climaCommand) {       
       try {
         var templateMensagem = new String(this.getClass()
-            .getResourceAsStream("/template/mensagem/brian_bot_mensagem_clima.txt")
+            .getResourceAsStream("/templates/mensagem/brian_bot_mensagem_clima.txt")
             .readAllBytes());
 
         var previsaoClima = advisorGateway.obterPrevisaoClima();
