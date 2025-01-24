@@ -1,7 +1,7 @@
 package com.rgbrain.brianbot.application.evolution.model;
 
 public enum AtivacaoBot {
-    BRIAN_BOT("/BrianBot");
+    BRIAN_BOT("@BrianBot");
 
     private String ativacao;
 
