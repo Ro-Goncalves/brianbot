@@ -9,11 +9,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.rgbrain.brianbot.domain.saci.infrastructure.ConsorciadoRepository;
+import com.rgbrain.brianbot.domain.saci.infrastructure.AtrasoRepository;
+import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Atraso;
 import com.rgbrain.brianbot.domain.saci.infrastructure.entity.Consorciado;
 
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -21,76 +28,65 @@ import java.util.Optional;
 public class SaciWebControlle {
 
     @Autowired
-    private ConsorciadoRepository consorciadoRepository;
+    private AtrasoRepository atrasoRepository;
 
     @Autowired
     private OpenAiChatModel chatModel;
    
     @GetMapping
-    public String listarConsorciados(Model model) {
-        List<Consorciado> consorciados = consorciadoRepository.findAll();
-        model.addAttribute("consorciados", consorciados);
+    public String listarAtrasos(Model model) {
+        List<Atraso> atrasos = atrasoRepository.findAll();
+        model.addAttribute("atrasos", atrasos);
         return "saci-index"; // Nome do template Thymeleaf
     }
 
-    @GetMapping("/ajuda-cancelamento/{id}")
+    @GetMapping("/atrasos/detalhes/{id}")
     @ResponseBody
-    public String gerarMensagemAjudaCancelamento(@PathVariable Long id) throws IOException {
-        var templateMensagem = new String(this.getClass()
-            .getResourceAsStream("/templates/mensagem/saci_mensagem_atraso.txt")
-            .readAllBytes());
-            
-        Optional<Consorciado> consorciadoOptional = consorciadoRepository.findById(id);
+    public Map<String, Object> getDetalhesAtraso(@PathVariable Long id) {
+        Optional<Atraso> atrasoOptional = atrasoRepository.findById(id);
         
-        return consorciadoOptional.map(consorciado -> {
-            // Lógica para gerar mensagem personalizada de ajuda
-            return gerarMensagemPersonalizada(consorciado);
-        }).orElse("Consorciado não encontrado.");
+        return atrasoOptional.map(atraso -> {
+            Map<String, Object> detalhes = new HashMap<>();
+            detalhes.put("valorAtraso", atraso.getValorAtraso());
+            detalhes.put("quantidadeParcelas", atraso.getQuantidadeParcelasAtraso());
+            detalhes.put("dataAtraso", atraso.getDataAtraso().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            detalhes.put("nomeConsorciado", atraso.getConsorciado().getNomeConsorciado());
+            detalhes.put("nomeComissionado", atraso.getComissionado().getNomeComissionado());
+            return detalhes;
+        }).orElse(Collections.singletonMap("erro", "Atraso não encontrado"));
     }
 
-    private String gerarMensagemPersonalizada(Consorciado consorciado) {
-        // Exemplo de geração de mensagem personalizada
-        StringBuilder mensagem = new StringBuilder();
+    @GetMapping("/atrasos/mensagem-contato/{id}")
+    @ResponseBody
+    public String gerarMensagemContato(@PathVariable Long id) {
+        Optional<Atraso> atrasoOptional = atrasoRepository.findById(id);
         
-        mensagem.append("Olá ").append(consorciado.getNomeConsorciado()).append(",\n\n");
-        
-        mensagem.append("Entendemos que você está considerando o cancelamento do consórcio. ");
-        
-        // Personalização baseada no objetivo do consorciado
-        if (consorciado.getObjetivoConsorciado() != null) {
-            mensagem.append("Vimos que seu objetivo inicial era: ")
-                   .append(consorciado.getObjetivoConsorciado())
-                   .append(". ");
+        return atrasoOptional.map(atraso -> {
+            return gerarMensagemPersonalizadaAtraso(atraso);
+        }).orElse("Atraso não encontrado.");
+    }
+
+    private String gerarMensagemPersonalizadaAtraso(Atraso atraso) {
+        try {
+            var templateMensagem = new String(this.getClass()
+            .getResourceAsStream("/templates/mensagem/saci_mensagem_atraso.txt")
+            .readAllBytes());
+
+            var prompt = templateMensagem.formatted(
+                atraso.getConsorciado().getNomeConsorciado(),
+                atraso.getConsorciado().getPersonalidadeConsorciado(),
+                atraso.getConsorciado().getInformacoesPessoaisConsorciado(),
+                atraso.getConsorciado().getObjetivoConsorciado(),
+                atraso.getQuantidadeParcelasAtraso(),
+                atraso.getComissionado().getNomeComissionado()
+            );
+       
+            var mensagemResposta = chatModel.call(prompt);
+
+            return mensagemResposta;
+        } catch (Exception e) {
+            return "Erro ao gerar mensagem personalizada. Tente novamente.";
         }
-        
-        mensagem.append("Gostaríamos de ajudar você a encontrar a melhor solução para sua situação. ");
-        
-        // Personalização baseada na personalidade
-        switch (consorciado.getPersonalidadeConsorciado()) {
-            case "PROATIVA":
-                mensagem.append("Como notamos que você é uma pessoa proativa, ")
-                       .append("podemos discutir alternativas que se alinhem com seus objetivos.");
-                break;
-            case "ANALITICA":
-                mensagem.append("Entendemos que, como pessoa analítica, ")
-                       .append("você precisa de informações claras sobre as opções disponíveis.");
-                break;
-            case "CRIATIVA":
-                mensagem.append("Sua personalidade criativa nos inspira a pensar ")
-                       .append("em soluções personalizadas para sua situação.");
-                break;
-            case "COLABORATIVA":
-                mensagem.append("Estamos abertos a colaborar e encontrar ")
-                       .append("a melhor estratégia junto com você.");
-                break;
-            default:
-                mensagem.append("Queremos trabalhar em conjunto para encontrar a melhor solução.");
-        }
-        
-        mensagem.append("\n\nPor favor, entre em contato conosco pelo WhatsApp ")
-               .append(consorciado.getWhatsappConsorciado())
-               .append(" para mais detalhes.");
-        
-        return mensagem.toString();
+       
     }
 }
