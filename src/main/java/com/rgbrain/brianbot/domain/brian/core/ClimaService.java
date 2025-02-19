@@ -59,5 +59,10 @@ public class ClimaService {
         throw new ClimaEnviarMensagemException("Erro ao enviar mensagem ajuda: %s".formatted(e.getMessage()), e);
       }
     }
+
+    public void executarAgendamentoClima() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'executarAgendamentoClima'");
+    }
     
 }
