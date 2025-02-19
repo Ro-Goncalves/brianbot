@@ -11,6 +11,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -95,7 +96,7 @@ public class AdvisorGateway {
     
             return responseEntity.getBody();
     
-        } catch (Exception e) {
+        } catch (RestClientException e) {
             log.error("Erro ao obter a previsão. {}", e.getMessage(), e);
             throw new RuntimeException(e);
         }

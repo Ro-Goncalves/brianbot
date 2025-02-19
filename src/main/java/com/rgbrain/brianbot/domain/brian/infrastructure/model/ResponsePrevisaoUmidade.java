@@ -1,10 +1,10 @@
 package com.rgbrain.brianbot.domain.brian.infrastructure.model;
 
-import java.time.LocalDateTime;
+// import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+// import com.fasterxml.jackson.annotation.JsonFormat;
+// import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 
@@ -18,9 +18,10 @@ public class ResponsePrevisaoUmidade {
 
     @Getter
     public static class Humidity {
-        @JsonProperty("date")
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private LocalDateTime date;
+        // @JsonProperty("date")
+        // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private String date;
+        private Integer value;
     }
 
 }
