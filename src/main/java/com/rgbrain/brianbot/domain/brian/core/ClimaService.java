@@ -61,8 +61,7 @@ public class ClimaService {
     }
 
     public void executarAgendamentoClima() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'executarAgendamentoClima'");
+      
     }
     
 }

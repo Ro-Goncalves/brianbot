@@ -2,6 +2,7 @@ package com.rgbrain.brianbot.domain.brian.infrastructure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,12 +19,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoClima;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoUmidade;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorClientException;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorException;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorSerializationException;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-@EnableRetry
+@EnableRetry(proxyTargetClass = true)
 public class AdvisorGateway {
 
     @Value("${advisor.url.previsao}")
@@ -49,56 +53,63 @@ public class AdvisorGateway {
 
     @Autowired
     private ObjectMapper objectMapper;
-    
-    public ResponsePrevisaoClima obterPrevisaoClima() {       
-        try { 
+
+    @Autowired
+    private Environment environment;
+
+    @Retryable(
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 5000),
+        value = {RestClientException.class, AdvisorClientException.class}
+    )
+    public ResponsePrevisaoClima obterPrevisaoClima() {
+        try {
             var previsaoClima = obterPrevisao(urlPrevisao);
-            var responsePrevisaoClima = objectMapper.readValue(previsaoClima, ResponsePrevisaoClima.class);
-    
-            return responsePrevisaoClima;
-
+            return objectMapper.readValue(previsaoClima, ResponsePrevisaoClima.class);
         } catch (JsonProcessingException e) {
-            log.error("Erro ao serializar o corpo da requisição. {}", e.getMessage(), e);
-            throw new RuntimeException(e);
+            log.error("Erro ao serializar previsão do clima. {}", e.getMessage(), e);
+            throw new AdvisorSerializationException("Erro ao processar dados da previsão do clima", e);
         }
     }
 
+    @Retryable(
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 5000),
+        value = {RestClientException.class, AdvisorClientException.class}
+    )
     public ResponsePrevisaoUmidade obterPrevisaoUmidade() {
-        try { 
+        try {
             var previsaoUmidade = obterPrevisao(urlPrevisaoUmidade);
-            var responsePrevisaoUmidade = objectMapper.readValue(previsaoUmidade, ResponsePrevisaoUmidade.class);
-    
-            return responsePrevisaoUmidade;
-
+            return objectMapper.readValue(previsaoUmidade, ResponsePrevisaoUmidade.class);
         } catch (JsonProcessingException e) {
-            log.error("Erro ao serializar o corpo da requisição. {}", e.getMessage(), e);
-            throw new RuntimeException(e);
+            log.error("Erro ao serializar previsão de umidade. {}", e.getMessage(), e);
+            throw new AdvisorSerializationException("Erro ao processar dados da previsão de umidade", e);
         }
     }
 
-    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 5 * 1000))
     private String obterPrevisao(String url) {
         try {            
-            var advisorToken = System.getenv("ADVISOR_API_TOKEN");
+            var advisorToken = environment.getProperty("ADVISOR_API_TOKEN");
+            if (advisorToken == null || advisorToken.isEmpty()) {
+                throw new AdvisorException("Token de API do Advisor não configurado");
+            }
 
             var requestHeaders = new HttpHeaders();
             requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-    
+
             HttpEntity<Object> requestEntity = new HttpEntity<>(requestHeaders);
-    
-            ResponseEntity<String> responseEntity =
-                restTemplate.exchange(
+
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
                     url.formatted(advisorToken),
                     HttpMethod.GET,
                     requestEntity,
-                    String.class
-                );
-    
+                    String.class);
+
             return responseEntity.getBody();
-    
+
         } catch (RestClientException e) {
-            log.error("Erro ao obter a previsão. {}", e.getMessage(), e);
-            throw new RuntimeException(e);
+            log.warn("Erro ao obter a previsão. {}", e.getMessage());
+            throw new AdvisorClientException("Falha na requisição ao serviço - %s".formatted(e.getMessage()), e);
         }
-    }    
+    }
 }
