@@ -55,7 +55,8 @@ public class AdvisorGatewayTest {
 
 	@BeforeEach
 	void setUp() {
-		ReflectionTestUtils.setField(advisorGateway, "urlPrevisao", "http://api.advisor.com/previsao?token=%s");
+		ReflectionTestUtils.setField(advisorGateway, "urlPrevisao",
+				"http://api.advisor.com/previsao?token=%s");
 
 		ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoUmidade",
 				"http://api.advisor.com/umidade?token=%s");
@@ -68,6 +69,9 @@ public class AdvisorGatewayTest {
 
 		ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoSensacaoTermica",
 				"http://api.advisor.com/sensacao-termica?token=%s");
+
+		ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoVento",
+				"http://api.advisor.com/vento?token=%s");
 
 		this.objectMapper = new ObjectMapper();
 		objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(),
@@ -426,6 +430,66 @@ public class AdvisorGatewayTest {
 
 		// When/Then
 		assertThatThrownBy(() -> advisorGateway.obterPrevisaoSensacaoTermica())
+				.isInstanceOf(AdvisorSerializationException.class);
+	}
+
+	@Test
+	@DisplayName("Quando a URI Previsão Vento retorna dados válidos, eles devem ser deserializados para ResponsePrevisaoVento")
+	void deveObterPrevisaoVentoComSucesso() {
+		// Given
+		var response = AdvisorDados.exemploResponsePrevisaoVento();
+
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
+
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
+
+		// When
+		var result = advisorGateway.obterPrevisaoVento();
+
+		// Then
+		verify(restTemplate, times(1)).exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class));
+
+		assertThat(result.getId()).isEqualTo(6997);
+		assertThat(result.getName()).isEqualTo("Londrina");
+		assertThat(result.getState()).isEqualTo("PR");
+		assertThat(result.getCountry()).isEqualTo("BR");
+
+		assertThat(result.getWinds()).hasSize(5);
+
+		var wind = result.getWinds().get(0);
+		assertThat(wind.getDate()).isEqualTo("2025-02-20 23:00:00");
+		assertThat(wind.getVelocity()).isEqualTo(10);
+		assertThat(wind.getDirection()).isEqualTo(151);
+		assertThat(wind.getDirectionSymbol()).isEqualTo("N");
+
+	}
+
+	@Test
+	@DisplayName("Quando a URI Previsão Vento retorna dados inválidos, deve lançar a exceção AdvisorSerializationException")
+	void deveObterPrevisaoVentoComFalha() {
+		// Given
+		var response = "Dados inválidos";
+
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
+
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
+
+		// When/Then
+		assertThatThrownBy(() -> advisorGateway.obterPrevisaoVento())
 				.isInstanceOf(AdvisorSerializationException.class);
 	}
 

@@ -136,6 +136,21 @@ public class AdvisorGateway {
         }
     }
 
+    @Retryable(
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 5000),
+        value = {AdvisorClientException.class}
+    )
+    public ResponsePrevisaoVento obterPrevisaoVento() {
+        try {
+            var previsaoVento = obterPrevisao(urlPrevisaoVento);
+            return objectMapper.readValue(previsaoVento, ResponsePrevisaoVento.class);
+        } catch (JsonProcessingException e) {
+            log.error("Erro ao serializar previsão de vento. {}", e.getMessage(), e);
+            throw new AdvisorSerializationException("Erro ao processar dados da previsão de vento", e);
+        }
+    }
+
     private String obterPrevisao(String url) {
         try {            
             var advisorToken = environment.getProperty("ADVISOR_API_TOKEN");
@@ -161,4 +176,6 @@ public class AdvisorGateway {
             throw new AdvisorClientException("Falha na requisição ao serviço - %s".formatted(e.getMessage()), e);
         }
     }
+
+    
 }

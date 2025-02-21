@@ -202,4 +202,47 @@ public class AdvisorDados {
                     }
                 """;
     }
+
+    public static String exemploResponsePrevisaoVento() {
+        return """
+                    {
+                        "id": 6997,
+                        "name": "Londrina",
+                        "state": "PR",
+                        "country": "BR",
+                        "winds": [
+                            {
+                                "date": "2025-02-20 23:00:00",
+                                "velocity": 10,
+                                "direction": 151,
+                                "directionSymbol": "N"
+                            },
+                            {
+                                "date": "2025-02-21 00:00:00",
+                                "velocity": 10,
+                                "direction": 153,
+                                "directionSymbol": "SSE"
+                            },
+                            {
+                                "date": "2025-02-21 01:00:00",
+                                "velocity": 10,
+                                "direction": 257,
+                                "directionSymbol": "SE"
+                            },
+                            {
+                                "date": "2025-02-21 02:00:00",
+                                "velocity": 10,
+                                "direction": 985,
+                                "directionSymbol": "ESE"
+                            },
+                            {
+                                "date": "2025-02-21 03:00:00",
+                                "velocity": 10,
+                                "direction": 523,
+                                "directionSymbol": "E"
+                            }
+                        ]
+                    }
+                """;
+    }
 }
