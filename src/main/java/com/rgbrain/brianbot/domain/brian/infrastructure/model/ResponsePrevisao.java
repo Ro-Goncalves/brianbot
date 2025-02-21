@@ -10,10 +10,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = ResponsePrevisaoPrecipitacao.class, name = "precipitations")
+        @JsonSubTypes.Type(value = ResponsePrevisaoPrecipitacao.class, name = "precipitations"),
+        @JsonSubTypes.Type(value = ResponsePrevisaoPrecipitacao.class, name = "temperatures")
 })
 public class ResponsePrevisao {
-    private int id;
+    private Integer id;
     private String name;
     private String state;
     private String country;

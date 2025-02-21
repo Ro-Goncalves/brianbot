@@ -13,10 +13,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @JsonTypeName("precipitations")
 public class ResponsePrevisaoPrecipitacao extends ResponsePrevisao {
-    private List<Precipitations> precipitations;
+    private List<Precipitation> precipitations;
 
     @Getter
-    public static class Precipitations {
+    public static class Precipitation {
         private String date;
         private Integer value;
     }
