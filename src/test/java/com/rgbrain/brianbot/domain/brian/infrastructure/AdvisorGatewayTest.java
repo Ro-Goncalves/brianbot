@@ -56,10 +56,15 @@ public class AdvisorGatewayTest {
 	@BeforeEach
 	void setUp() {
 		ReflectionTestUtils.setField(advisorGateway, "urlPrevisao", "http://api.advisor.com/previsao?token=%s");
+
 		ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoUmidade",
 				"http://api.advisor.com/umidade?token=%s");
+
 		ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoPrecipitacao",
 				"http://api.advisor.com/precipitacao?token=%s");
+
+		ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoTemperatura",
+				"http://api.advisor.com/temperatura?token=%s");
 
 		this.objectMapper = new ObjectMapper();
 		objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(),
@@ -302,6 +307,64 @@ public class AdvisorGatewayTest {
 
 		// When/Then
 		assertThatThrownBy(() -> advisorGateway.obterPrevisaoPrecipitacao())
+				.isInstanceOf(AdvisorSerializationException.class);
+	}
+
+	@Test
+	@DisplayName("Quando a URI Previsão Temperatura retorna dados válidos, eles devem ser deserializados para ResponsePrevisaoTemperatura")
+	void deveObterPrevisaoTemperaturaComSucesso() {
+		// Given
+		var response = AdvisorDados.exemploResponsePrevisaoTemperatura();
+
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
+
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
+
+		// When
+		var result = advisorGateway.obterPrevisaoTemperatura();
+
+		// Then
+		verify(restTemplate, times(1)).exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class));
+
+		assertThat(result.getId()).isEqualTo(6997);
+		assertThat(result.getName()).isEqualTo("Londrina");
+		assertThat(result.getState()).isEqualTo("PR");
+		assertThat(result.getCountry()).isEqualTo("BR");
+
+		assertThat(result.getTemperatures()).hasSize(5);
+
+		var temperature = result.getTemperatures().get(0);
+		assertThat(temperature.getDate()).isEqualTo("2025-02-20 23:00:00");
+		assertThat(temperature.getValue()).isEqualTo(27);
+
+	}
+
+	@Test
+	@DisplayName("Quando a URI Previsão Temperatura retorna dados inválidos, deve lançar a exceção AdvisorSerializationException")
+	void deveObterPrevisaoTemperaturaComFalha() {
+		// Given
+		var response = "Dados inválidos";
+
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
+
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
+
+		// When/Then
+		assertThatThrownBy(() -> advisorGateway.obterPrevisaoTemperatura())
 				.isInstanceOf(AdvisorSerializationException.class);
 	}
 }
