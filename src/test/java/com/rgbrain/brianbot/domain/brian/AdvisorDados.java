@@ -3,7 +3,7 @@ package com.rgbrain.brianbot.domain.brian;
 public class AdvisorDados {
 
     public static String exemploResponsePrevisaoClima() {
-        return """
+        return  """
                     {
                         "id": 6997,
                         "name": "Londrina",
@@ -64,7 +64,7 @@ public class AdvisorDados {
     }
 
     public static String exemploResponsePrevisaoUmidade() {
-        return """
+        return  """
                     {
                         "id": 6997,
                         "name": "Londrina",
@@ -98,6 +98,39 @@ public class AdvisorDados {
                             {
                                 "date": "2025-02-19 19:00:00",
                                 "value": 56
+                            }
+                        ]
+                    }
+                """;
+    }
+
+    public static String exemploResponsePrevisaoPrecipitacao() {
+        return """
+                    {
+                        "id": 6997,
+                        "name": "Londrina",
+                        "state": "PR",
+                        "country": "BR",
+                        "precipitations": [
+                            {
+                                "date": "2025-02-20 22:00:00",
+                                "value": 0
+                            },
+                            {
+                                "date": "2025-02-20 23:00:00",
+                                "value": 0
+                            },
+                            {
+                                "date": "2025-02-21 00:00:00",
+                                "value": 0
+                            },
+                            {
+                                "date": "2025-02-21 01:00:00",
+                                "value": 0
+                            },
+                            {
+                                "date": "2025-02-21 02:00:00",
+                                "value": 0
                             }
                         ]
                     }

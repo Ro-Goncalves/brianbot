@@ -23,7 +23,9 @@ public class ConfiguracaoBrianBot {
     
     @Bean
     ObjectMapper objectMapper(){
-        return new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
+        return mapper;
     }
 
     @Bean

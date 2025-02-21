@@ -19,304 +19,289 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rgbrain.brianbot.configuracao.RetryTestConfig;
 import com.rgbrain.brianbot.domain.brian.AdvisorDados;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorClientException;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorException;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorSerializationException;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 
 @ExtendWith(MockitoExtension.class)
-@Import(RetryTestConfig.class)
-@SpringBootTest()
-@ActiveProfiles("test")
 public class AdvisorGatewayTest {
 
-    @Mock
-    private RestTemplate restTemplate;
+	@Mock
+	private RestTemplate restTemplate;
 
-    @Spy
-    private ObjectMapper objectMapper = new ObjectMapper();
+	@Spy
+	private ObjectMapper objectMapper;
 
-    @InjectMocks
-    private AdvisorGateway advisorGateway;
+	@InjectMocks
+	private AdvisorGateway advisorGateway;
 
-    @Mock
-    private Environment environment;
+	@Mock
+	private Environment environment;
 
-    @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(advisorGateway, "urlPrevisao", "http://api.advisor.com/previsao?token=%s");
-        ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoUmidade", "http://api.advisor.com/umidade?token=%s");
+	@BeforeEach
+	void setUp() {
+		ReflectionTestUtils.setField(advisorGateway, "urlPrevisao", "http://api.advisor.com/previsao?token=%s");
+		ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoUmidade",
+				"http://api.advisor.com/umidade?token=%s");
+		ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoPrecipitacao",
+				"http://api.advisor.com/precipitacao?token=%s");
 
-        when(environment.getProperty("ADVISOR_API_TOKEN")).thenReturn("token-mock");
-    }
+		this.objectMapper = new ObjectMapper();
+		objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(),
+				ObjectMapper.DefaultTyping.NON_FINAL);
 
-    @Test
-    @DisplayName("Deve obter previsão com sucesso na primeira tentativa")
-    void deveObterPrevisaoComSucessoNaPrimeiraTentativa() {
-        // Given
-        var responseBody = AdvisorDados.exemploResponsePrevisaoClima();
-        var responseEntity = new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(HttpStatus.SC_OK));
+		when(environment.getProperty("ADVISOR_API_TOKEN")).thenReturn("token-mock");
+	}
 
-        when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class))).thenReturn(responseEntity);
+	@Test
+	@DisplayName("Deve validar se os headers estão corretos")
+	void deveValidarSeHeadersEstaoCorretos() {
+		// Given
+		var responseBody = AdvisorDados.exemploResponsePrevisaoClima();
+		;
+		var responseEntity = new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(HttpStatus.SC_OK));
+		var headerCaptor = ArgumentCaptor.forClass(HttpEntity.class);
 
-        // When
-        advisorGateway.obterPrevisaoClima();
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				headerCaptor.capture(),
+				eq(String.class))).thenReturn(responseEntity);
 
-        // Then
-        verify(restTemplate, times(1)).exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class));
-    }
+		// When
+		advisorGateway.obterPrevisaoClima();
 
-    @Test
-    @DisplayName("Deve obter previsão com sucesso após retry")
-    void deveObterPrevisaoComSucessoAposRetry() {
-        // Given
-        var responseBody = AdvisorDados.exemploResponsePrevisaoClima();
-        var responseEntity = new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(HttpStatus.SC_OK));
+		// Then
+		HttpEntity<?> capturedEntity = headerCaptor.getValue();
+		HttpHeaders headers = capturedEntity.getHeaders();
 
-        when(environment.getProperty("ADVISOR_API_TOKEN")).thenReturn("token-teste");
-        when(restTemplate
-                .exchange(
-                        anyString(),
-                        eq(HttpMethod.GET),
-                        any(HttpEntity.class),
-                        eq(String.class)))
-                .thenThrow(new RestClientException("Primeira falha"))
-                .thenThrow(new RestClientException("Segunda falha"))
-                .thenReturn(responseEntity);
+		assertThat(headers.getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
+	}
 
-        // When
-        var result = advisorGateway.obterPrevisaoClima();
+	@Test
+	@DisplayName("Quando token não está configurado, deve lançar AdvisorException")
+	void deveLancarExcecaoQuandoTokenNaoEstaConfigurado() {
+		// Given
+		when(environment.getProperty("ADVISOR_API_TOKEN")).thenReturn(null);
 
-        // Then
-        verify(restTemplate, times(3)).exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class));
+		// When/Then
+		assertThatThrownBy(() -> advisorGateway.obterPrevisaoClima())
+				.isInstanceOf(AdvisorException.class)
+				.hasMessage("Token de API do Advisor não configurado");
+	}
 
-        assertThat(result).isNotNull();
-    }
+	@Test
+	@DisplayName("Quando o serviço está indisponível, deve lançar AdvisorClientException")
+	void deveObterPrevisaoClimaComErro() {
+		// Given
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenThrow(RestClientException.class);
 
-    @Test
-    @DisplayName("Deve falhar após todas as tentativas de retry")
-    void deveFalharAposTodasAsTentativasDeRetry() {
-        // Given
-        when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class)))
-                .thenThrow(new RestClientException("Erro na chamada"));
+		// When/Then
+		assertThatThrownBy(() -> advisorGateway.obterPrevisaoClima())
+				.isInstanceOf(AdvisorClientException.class)
+				.hasMessageContaining(
+						"Erro na comunicação com o Advisor: Falha na requisição ao serviço");
+	}
 
-        // When/Then
-        assertThatThrownBy(() -> advisorGateway.obterPrevisaoClima())
-                .isInstanceOf(AdvisorClientException.class)
-                .hasMessageContaining("Erro na comunicação com o Advisor: Falha na requisição ao serviço");
+	@Test
+	@DisplayName("Quando a URI Previsão Clima retorna dados válidos, eles devem ser deserializados para ResponsePrevisaoClima")
+	void deveObterPrevisaoClimaComSucesso() throws JsonProcessingException {
+		// Given
+		var response = AdvisorDados.exemploResponsePrevisaoClima();
 
-        verify(restTemplate, times(3)).exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class));
-    }
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
 
-    @Test
-    @DisplayName("Deve validar se os headers estão corretos")
-    void deveValidarSeHeadersEstaoCorretos() {
-        // Given
-        var responseBody = AdvisorDados.exemploResponsePrevisaoClima();;
-        var responseEntity = new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(HttpStatus.SC_OK));
-        var headerCaptor = ArgumentCaptor.forClass(HttpEntity.class);
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
 
-        when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                headerCaptor.capture(),
-                eq(String.class))).thenReturn(responseEntity);
+		// When
+		var result = advisorGateway.obterPrevisaoClima();
 
-        // When
-        advisorGateway.obterPrevisaoClima();
+		// Then
+		verify(restTemplate, times(1)).exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class));
 
-        // Then
-        HttpEntity<?> capturedEntity = headerCaptor.getValue();
-        HttpHeaders headers = capturedEntity.getHeaders();
+		assertThat(result.getId()).isEqualTo(6997);
+		assertThat(result.getName()).isEqualTo("Londrina");
+		assertThat(result.getState()).isEqualTo("PR");
+		assertThat(result.getCountry()).isEqualTo("BR");
 
-        assertThat(headers.getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
-    }
+		assertThat(result.getData()).hasSize(2);
 
-    @Test
-    @DisplayName("Quando token não está configurado, deve lançar AdvisorException")
-    void deveLancarExcecaoQuandoTokenNaoEstaConfigurado() {
-        // Given
-        when(environment.getProperty("ADVISOR_API_TOKEN")).thenReturn(null);
+		var data = result.getData().get(0);
+		assertThat(data.getDate()).isEqualTo("2025-02-18");
+		assertThat(data.getDatebr()).isEqualTo("18/02/2025");
+		assertThat(data.getHumidity().getMin()).isEqualTo(54);
+		assertThat(data.getHumidity().getMax()).isEqualTo(85);
+		assertThat(data.getRain().getPrecipitation()).isEqualTo(6);
+		assertThat(data.getWind().getVelocity()).isEqualTo(6);
+		assertThat(data.getWind().getDirection()).isEqualTo("NW");
+		assertThat(data.getWind().getDirectionDegrees()).isEqualTo(274);
+		assertThat(data.getThermalSensation().getMin()).isEqualTo(22);
+		assertThat(data.getThermalSensation().getMax()).isEqualTo(35);
+		assertThat(data.getTemperature().getMin()).isEqualTo(24);
+		assertThat(data.getTemperature().getMax()).isEqualTo(33);
+	}
 
-        // When/Then
-        assertThatThrownBy(() -> advisorGateway.obterPrevisaoClima())
-                .isInstanceOf(AdvisorException.class)
-                .hasMessage("Token de API do Advisor não configurado");
-    }
+	@Test
+	@DisplayName("Quando a URI Previsão Clima retorna dados inválidos, deve lançar a exceção AdvisorSerializationException")
+	void deveObterPrevisaoClimaComFalha() {
+		// Given
+		var response = "Dados inválidos";
 
-    @Test
-    @DisplayName("Quando o serviço está indisponível, deve lançar AdvisorClientException")
-    void deveObterPrevisaoClimaComErro() {
-        // Given
-        when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class))).thenThrow(RestClientException.class);
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
 
-        // When/Then
-        assertThatThrownBy(() -> advisorGateway.obterPrevisaoClima())
-                .isInstanceOf(AdvisorClientException.class)
-                .hasMessageContaining("Erro na comunicação com o Advisor: Falha na requisição ao serviço");
-    }
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
 
-    @Test
-    @DisplayName("Quando a URI Previsão Clima retorna dados válidos, eles devem ser deserializados para ResponsePrevisaoClima")
-    void deveObterPrevisaoClimaComSucesso() throws JsonProcessingException {
-        // Given
-        var responsePrevisaoClima = AdvisorDados.exemploResponsePrevisaoClima();
+		// When/Then
+		assertThatThrownBy(() -> advisorGateway.obterPrevisaoClima())
+				.isInstanceOf(AdvisorSerializationException.class);
+	}
 
-        var responseEntity = new ResponseEntity<String>(responsePrevisaoClima,
-                HttpStatusCode.valueOf(HttpStatus.SC_OK));
+	@Test
+	@DisplayName("Quando a URI Previsão Umidade retorna dados válidos, eles devem ser deserializados para ResponsePrevisaoUmidade")
+	void deveObterPrevisaoUmidadeComSucesso() throws JsonProcessingException {
+		// Given
+		var response = AdvisorDados.exemploResponsePrevisaoUmidade();
 
-        when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class))).thenReturn(responseEntity);
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
 
-        // When
-        var result = advisorGateway.obterPrevisaoClima();
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
 
-        // Then
-        verify(restTemplate, times(1)).exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class));
+		// When
+		var result = advisorGateway.obterPrevisaoUmidade();
 
-        assertThat(result.getId()).isEqualTo(6997);
-        assertThat(result.getName()).isEqualTo("Londrina");
-        assertThat(result.getState()).isEqualTo("PR");
-        assertThat(result.getCountry()).isEqualTo("BR");
+		// Then
+		verify(restTemplate, times(1)).exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class));
 
-        assertThat(result.getData()).hasSize(2);
+		assertThat(result.getId()).isEqualTo(6997);
+		assertThat(result.getName()).isEqualTo("Londrina");
+		assertThat(result.getState()).isEqualTo("PR");
+		assertThat(result.getCountry()).isEqualTo("BR");
 
-        var dailyData1 = result.getData().get(0);
-        assertThat(dailyData1.getDate()).isEqualTo("2025-02-18");
-        assertThat(dailyData1.getDatebr()).isEqualTo("18/02/2025");
-        assertThat(dailyData1.getHumidity().getMin()).isEqualTo(54);
-        assertThat(dailyData1.getHumidity().getMax()).isEqualTo(85);
-        assertThat(dailyData1.getRain().getPrecipitation()).isEqualTo(6);
-        assertThat(dailyData1.getWind().getVelocity()).isEqualTo(6);
-        assertThat(dailyData1.getWind().getDirection()).isEqualTo("NW");
-        assertThat(dailyData1.getWind().getDirectionDegrees()).isEqualTo(274);
-        assertThat(dailyData1.getThermalSensation().getMin()).isEqualTo(22);
-        assertThat(dailyData1.getThermalSensation().getMax()).isEqualTo(35);
-        assertThat(dailyData1.getTemperature().getMin()).isEqualTo(24);
-        assertThat(dailyData1.getTemperature().getMax()).isEqualTo(33);
-    }
+		assertThat(result.getHumidities()).hasSize(7);
 
-    @Test
-    @DisplayName("Quando a URI Previsão Clima retorna dados inválidos, deve lançar uma exceção")
-    void deveObterPrevisaoClimaComFalha() {
-        // Given
-        var responsePrevisao = "Dados inválidos";
+		var humidity = result.getHumidities().get(0);
+		assertThat(humidity.getDate()).isEqualTo("2025-02-19 13:00:00");
+		assertThat(humidity.getValue()).isEqualTo(79);
 
-        var responseEntity = new ResponseEntity<String>(responsePrevisao,
-                HttpStatusCode.valueOf(HttpStatus.SC_OK));
+	}
 
-        when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class))).thenReturn(responseEntity);
+	@Test
+	@DisplayName("Quando a URI Previsão Umidade retorna dados inválidos, deve lançar a exceção AdvisorSerializationException")
+	void deveObterPrevisaoUmidadeComFalha() {
+		// Given
+		var response = "Dados inválidos";
 
-        // When/Then
-        assertThatThrownBy(() -> advisorGateway.obterPrevisaoClima()).isInstanceOf(RuntimeException.class);
-    }
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
 
-    @Test
-    @DisplayName("Quando a URI Previsão Umidade retorna dados válidos, eles devem ser deserializados para ResponsePrevisaoUmidade")
-    void deveObterPrevisaoUmidadeComSucesso() throws JsonProcessingException {
-        // Given
-        var responsePrevisaoUmidade = AdvisorDados.exemploResponsePrevisaoUmidade();
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
 
-        var responseEntity = new ResponseEntity<String>(responsePrevisaoUmidade,
-                HttpStatusCode.valueOf(HttpStatus.SC_OK));
+		// When/Then
+		assertThatThrownBy(() -> advisorGateway.obterPrevisaoUmidade())
+				.isInstanceOf(AdvisorSerializationException.class);
+	}
 
-        when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class))).thenReturn(responseEntity);
+	@Test
+	@DisplayName("Quando a URI Previsão Precipitação retorna dados válidos, eles devem ser deserializados para ResponsePrevisaoPrecipitacao")
+	void deveObterPrevisaoPrecipitacaoComSucesso() throws JsonProcessingException {
+		// Given
+		var response = AdvisorDados.exemploResponsePrevisaoPrecipitacao();
 
-        // When
-        var result = advisorGateway.obterPrevisaoUmidade();
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
 
-        // Then
-        verify(restTemplate, times(1)).exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class));
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
 
-        assertThat(result.getId()).isEqualTo(6997);
-        assertThat(result.getName()).isEqualTo("Londrina");
-        assertThat(result.getState()).isEqualTo("PR");
-        assertThat(result.getCountry()).isEqualTo("BR");
+		// When
+		var result = advisorGateway.obterPrevisaoPrecipitacao();
 
-        assertThat(result.getHumidities()).hasSize(7);
+		// Then
+		verify(restTemplate, times(1)).exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class));
 
-        var dailyData1 = result.getHumidities().get(0);
-        assertThat(dailyData1.getDate()).isEqualTo("2025-02-19 13:00:00");
-        assertThat(dailyData1.getValue()).isEqualTo(79);
+		assertThat(result.getId()).isEqualTo(6997);
+		assertThat(result.getName()).isEqualTo("Londrina");
+		assertThat(result.getState()).isEqualTo("PR");
+		assertThat(result.getCountry()).isEqualTo("BR");
 
-    }
+		assertThat(result.getPrecipitations()).hasSize(5);
 
-    @Test
-    @DisplayName("Quando a URI Previsão Umidade retorna dados inválidos, deve lançar uma exceção")
-    void deveObterPrevisaoUmidadeComFalha() {
-        // Given
-        var responsePrevisaoUmidade = "Dados inválidos";
+		var precipitation = result.getPrecipitations().get(0);
+		assertThat(precipitation.getDate()).isEqualTo("2025-02-20 22:00:00");
+		assertThat(precipitation.getValue()).isEqualTo(0);
 
-        var responseEntity = new ResponseEntity<String>(responsePrevisaoUmidade,
-                HttpStatusCode.valueOf(HttpStatus.SC_OK));
+	}
 
-        when(restTemplate.exchange(
-                anyString(),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(String.class))).thenReturn(responseEntity);
+	@Test
+	@DisplayName("Quando a URI Previsão Precipitação retorna dados inválidos, deve lançar a exceção AdvisorSerializationException")
+	void deveObterPrevisaoPrecipitacaoComFalha() {
+		// Given
+		var response = "Dados inválidos";
 
-        // When/Then
-        assertThatThrownBy(() -> advisorGateway.obterPrevisaoUmidade()).isInstanceOf(RuntimeException.class);
-    }
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
+
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
+
+		// When/Then
+		assertThatThrownBy(() -> advisorGateway.obterPrevisaoPrecipitacao())
+				.isInstanceOf(AdvisorSerializationException.class);
+	}
 }

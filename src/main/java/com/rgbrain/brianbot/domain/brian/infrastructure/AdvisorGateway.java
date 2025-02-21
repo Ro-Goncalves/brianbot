@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoClima;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoPrecipitacao;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoUmidade;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorClientException;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorException;
@@ -60,7 +61,7 @@ public class AdvisorGateway {
     @Retryable(
         maxAttempts = 3,
         backoff = @Backoff(delay = 5000),
-        value = {RestClientException.class, AdvisorClientException.class}
+        value = {AdvisorClientException.class}
     )
     public ResponsePrevisaoClima obterPrevisaoClima() {
         try {
@@ -75,7 +76,7 @@ public class AdvisorGateway {
     @Retryable(
         maxAttempts = 3,
         backoff = @Backoff(delay = 5000),
-        value = {RestClientException.class, AdvisorClientException.class}
+        value = {AdvisorClientException.class}
     )
     public ResponsePrevisaoUmidade obterPrevisaoUmidade() {
         try {
@@ -85,6 +86,22 @@ public class AdvisorGateway {
             log.error("Erro ao serializar previsão de umidade. {}", e.getMessage(), e);
             throw new AdvisorSerializationException("Erro ao processar dados da previsão de umidade", e);
         }
+    }
+
+    @Retryable(
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 5000),
+        value = {AdvisorClientException.class}
+    )
+    public ResponsePrevisaoPrecipitacao obterPrevisaoPrecipitacao() {
+        try {
+            var previsaoPrecipitacao = obterPrevisao(urlPrevisaoPrecipitacao);
+            return objectMapper.readValue(previsaoPrecipitacao, ResponsePrevisaoPrecipitacao.class);
+        } catch (JsonProcessingException e) {
+            log.error("Erro ao serializar previsão de precipitacao. {}", e.getMessage(), e);
+            throw new AdvisorSerializationException("Erro ao processar dados da previsão de precipitacao", e);
+        }
+        
     }
 
     private String obterPrevisao(String url) {
