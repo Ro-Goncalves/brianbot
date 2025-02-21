@@ -170,4 +170,36 @@ public class AdvisorDados {
                 """;
     }
 
+    public static String exemploResponsePrevisaoSensacaoTermica() {
+        return """
+                    {
+                        "id": 6997,
+                        "name": "Londrina",
+                        "state": "PR",
+                        "country": "BR",
+                        "thermalSensations": [
+                            {
+                                "date": "2025-02-20 23:00:00",
+                                "value": 27
+                            },
+                            {
+                                "date": "2025-02-21 00:00:00",
+                                "value": 26
+                            },
+                            {
+                                "date": "2025-02-21 01:00:00",
+                                "value": 26
+                            },
+                            {
+                                "date": "2025-02-21 02:00:00",
+                                "value": 25
+                            },
+                            {
+                                "date": "2025-02-21 03:00:00",
+                                "value": 24
+                            }
+                        ]
+                    }
+                """;
+    }
 }

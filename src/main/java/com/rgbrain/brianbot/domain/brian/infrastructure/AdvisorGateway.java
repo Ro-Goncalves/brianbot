@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoClima;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoPrecipitacao;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoSensacaoTermica;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoTemperatura;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoUmidade;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorClientException;
@@ -120,6 +121,21 @@ public class AdvisorGateway {
         }
     }
 
+    @Retryable(
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 5000),
+        value = {AdvisorClientException.class}
+    )
+    public ResponsePrevisaoSensacaoTermica obterPrevisaoSensacaoTermica() {
+        try {
+            var previsaoSensacaoTermica = obterPrevisao(urlPrevisaoSensacaoTermica);
+            return objectMapper.readValue(previsaoSensacaoTermica, ResponsePrevisaoSensacaoTermica.class);
+        } catch (JsonProcessingException e) {
+            log.error("Erro ao serializar previsão de sensação térmica. {}", e.getMessage(), e);
+            throw new AdvisorSerializationException("Erro ao processar dados da previsão de sensação térmica", e);
+        }
+    }
+
     private String obterPrevisao(String url) {
         try {            
             var advisorToken = environment.getProperty("ADVISOR_API_TOKEN");
@@ -145,6 +161,4 @@ public class AdvisorGateway {
             throw new AdvisorClientException("Falha na requisição ao serviço - %s".formatted(e.getMessage()), e);
         }
     }
-
-    
 }

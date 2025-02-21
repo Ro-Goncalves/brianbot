@@ -63,7 +63,7 @@ public class ClimaService {
 		var reponseUmidade = advisorGateway.obterPrevisaoUmidade();
 		var responsePrecipitacao = advisorGateway.obterPrevisaoPrecipitacao();
 		var responseTemperatura = advisorGateway.obterPrevisaoTemperatura();
-		// var responseSensacaoTermica = advisorGateway.obterPrevisaoSensacaoTermica();
+		var responseSensacaoTermica = advisorGateway.obterPrevisaoSensacaoTermica();
 		// var responseVento = advisorGateway.obterPrevisaoVento();
 	}
 

@@ -66,6 +66,9 @@ public class AdvisorGatewayTest {
 		ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoTemperatura",
 				"http://api.advisor.com/temperatura?token=%s");
 
+		ReflectionTestUtils.setField(advisorGateway, "urlPrevisaoSensacaoTermica",
+				"http://api.advisor.com/sensacao-termica?token=%s");
+
 		this.objectMapper = new ObjectMapper();
 		objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(),
 				ObjectMapper.DefaultTyping.NON_FINAL);
@@ -367,4 +370,63 @@ public class AdvisorGatewayTest {
 		assertThatThrownBy(() -> advisorGateway.obterPrevisaoTemperatura())
 				.isInstanceOf(AdvisorSerializationException.class);
 	}
+
+	@Test
+	@DisplayName("Quando a URI Previsão Sensação Térmica retorna dados válidos, eles devem ser deserializados para ResponsePrevisaoSensacaoTermica")
+	void deveObterPrevisaoSensacaoTermicaComSucesso() {
+		// Given
+		var response = AdvisorDados.exemploResponsePrevisaoSensacaoTermica();
+
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
+
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
+
+		// When
+		var result = advisorGateway.obterPrevisaoSensacaoTermica();
+
+		// Then
+		verify(restTemplate, times(1)).exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class));
+
+		assertThat(result.getId()).isEqualTo(6997);
+		assertThat(result.getName()).isEqualTo("Londrina");
+		assertThat(result.getState()).isEqualTo("PR");
+		assertThat(result.getCountry()).isEqualTo("BR");
+
+		assertThat(result.getThermalSensations()).hasSize(5);
+
+		var thermalSensation = result.getThermalSensations().get(0);
+		assertThat(thermalSensation.getDate()).isEqualTo("2025-02-20 23:00:00");
+		assertThat(thermalSensation.getValue()).isEqualTo(27);
+
+	}
+
+	@Test
+	@DisplayName("Quando a URI Previsão Sensação Térmica retorna dados inválidos, deve lançar a exceção AdvisorSerializationException")
+	void deveObterPrevisaoSensacaoTermicaComFalha() {
+		// Given
+		var response = "Dados inválidos";
+
+		var responseEntity = new ResponseEntity<String>(response,
+				HttpStatusCode.valueOf(HttpStatus.SC_OK));
+
+		when(restTemplate.exchange(
+				anyString(),
+				eq(HttpMethod.GET),
+				any(HttpEntity.class),
+				eq(String.class))).thenReturn(responseEntity);
+
+		// When/Then
+		assertThatThrownBy(() -> advisorGateway.obterPrevisaoSensacaoTermica())
+				.isInstanceOf(AdvisorSerializationException.class);
+	}
+
 }
