@@ -18,50 +18,53 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ClimaService {
 
-    @Autowired
-    private EvolutionEventPublisher evolutionEventPublisher;
+	@Autowired
+	private EvolutionEventPublisher evolutionEventPublisher;
 
-    @Autowired
-    private AdvisorGateway advisorGateway;
+	@Autowired
+	private AdvisorGateway advisorGateway;
 
-    @Autowired
-    private OpenAiChatModel chatModel;
-   
-    public void executar(ClimaCommand climaCommand) {       
-      try {
-        var templateMensagem = new String(this.getClass()
-            .getResourceAsStream("/templates/mensagem/brian_bot_mensagem_clima.txt")
-            .readAllBytes());
+	@Autowired
+	private OpenAiChatModel chatModel;
 
-        var previsaoClima = advisorGateway.obterPrevisaoClima();
-        var climaAtual = previsaoClima.getData().get(0);
+	public void executar(ClimaCommand climaCommand) {
+		try {
+			var templateMensagem = new String(this.getClass()
+					.getResourceAsStream("/templates/mensagem/brian_bot_mensagem_clima.txt")
+					.readAllBytes());
 
-        var prompt = templateMensagem.formatted(
-            climaCommand.nomeRemetente(),
-            previsaoClima.getName(),
-            previsaoClima.getState(),
-            climaAtual.getTemperature().getMin(),
-            climaAtual.getTemperature().getMax(),
-            climaAtual.getHumidity().getMin(),
-            climaAtual.getHumidity().getMax(),
-            climaAtual.getRain().getPrecipitation(),
-            climaAtual.getWind().getVelocity(),
-            climaAtual.getWind().getDirection(),
-            climaAtual.getThermalSensation().getMin(),
-            climaAtual.getThermalSensation().getMax()
-        );
+			var previsaoClima = advisorGateway.obterPrevisaoClima();
+			var climaAtual = previsaoClima.getData().get(0);
 
-        var mensagemResposta = chatModel.call(prompt);
+			var prompt = templateMensagem.formatted(
+					climaCommand.nomeRemetente(),
+					previsaoClima.getName(),
+					previsaoClima.getState(),
+					climaAtual.getTemperature().getMin(),
+					climaAtual.getTemperature().getMax(),
+					climaAtual.getHumidity().getMin(),
+					climaAtual.getHumidity().getMax(),
+					climaAtual.getRain().getPrecipitation(),
+					climaAtual.getWind().getVelocity(),
+					climaAtual.getWind().getDirection(),
+					climaAtual.getThermalSensation().getMin(),
+					climaAtual.getThermalSensation().getMax());
 
-        evolutionEventPublisher.publicar(new EnviarTextoEvent(climaCommand.idRemoto(), mensagemResposta));
-        
-      } catch (IOException e) {
-        throw new ClimaEnviarMensagemException("Erro ao enviar mensagem ajuda: %s".formatted(e.getMessage()), e);
-      }
-    }
+			var mensagemResposta = chatModel.call(prompt);
 
-    public void executarAgendamentoClima() {
-      
-    }
-    
+			evolutionEventPublisher.publicar(new EnviarTextoEvent(climaCommand.idRemoto(), mensagemResposta));
+
+		} catch (IOException e) {
+			throw new ClimaEnviarMensagemException("Erro ao enviar mensagem ajuda: %s".formatted(e.getMessage()), e);
+		}
+	}
+
+	public void executarAgendamentoClima() {
+		var reponseUmidade = advisorGateway.obterPrevisaoUmidade();
+		var responsePrecipitacao = advisorGateway.obterPrevisaoPrecipitacao();
+		var responseTemperatura = advisorGateway.obterPrevisaoTemperatura();
+		// var responseSensacaoTermica = advisorGateway.obterPrevisaoSensacaoTermica();
+		// var responseVento = advisorGateway.obterPrevisaoVento();
+	}
+
 }
