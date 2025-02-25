@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.rgbrain.brianbot.application.evolution.EvolutionEventPublisher;
 import com.rgbrain.brianbot.domain.brian.core.model.ClimaCommand;
 import com.rgbrain.brianbot.domain.brian.core.model.exception.ClimaEnviarMensagemException;
+import com.rgbrain.brianbot.domain.brian.core.service.FiltraDadoTemporalService;
 import com.rgbrain.brianbot.domain.brian.infrastructure.AdvisorGateway;
 import com.rgbrain.brianbot.infrastructure.resposta.evolution.model.EnviarTextoEvent;
 
@@ -65,6 +66,13 @@ public class ClimaService {
 		var responseTemperatura = advisorGateway.obterPrevisaoTemperatura();
 		var responseSensacaoTermica = advisorGateway.obterPrevisaoSensacaoTermica();
 		var responseVento = advisorGateway.obterPrevisaoVento();
+		
+		var previsaoUmidadeFiltrada = FiltraDadoTemporalService.filtraDadoTemporal(reponseUmidade.getHumidities());
+		var previsaoPrecipitacaoFiltrada = FiltraDadoTemporalService.filtraDadoTemporal(responsePrecipitacao.getPrecipitations());
+		var previsaoTemperaturaFiltrada = FiltraDadoTemporalService.filtraDadoTemporal(responseTemperatura.getTemperatures());
+		var previsaoSensacaoTermicaFiltrada = FiltraDadoTemporalService.filtraDadoTemporal(responseSensacaoTermica.getThermalSensations());
+		var previsaoVentoFiltrada = FiltraDadoTemporalService.filtraDadoTemporal(responseVento.getWinds());
+
 	}
 
 }
