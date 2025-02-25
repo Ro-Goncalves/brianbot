@@ -85,7 +85,7 @@ public class AdvisorGatewayTest {
 	void deveValidarSeHeadersEstaoCorretos() {
 		// Given
 		var responseBody = AdvisorDados.exemploResponsePrevisaoClima();
-		;
+		
 		var responseEntity = new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(HttpStatus.SC_OK));
 		var headerCaptor = ArgumentCaptor.forClass(HttpEntity.class);
 

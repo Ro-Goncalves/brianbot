@@ -22,6 +22,7 @@ import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoPr
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoSensacaoTermica;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoTemperatura;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoUmidade;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoVento;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorClientException;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorException;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorSerializationException;
