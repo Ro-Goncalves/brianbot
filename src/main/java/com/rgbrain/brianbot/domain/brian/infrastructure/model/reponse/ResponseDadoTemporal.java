@@ -15,6 +15,7 @@ public class ResponseDadoTemporal {
     private Integer value;
 
     public LocalDateTime getDateToLocaleDateTime() {
-        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(date, formatter);
     }
 }
