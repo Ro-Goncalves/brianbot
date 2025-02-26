@@ -2,7 +2,7 @@ package com.rgbrain.brianbot.domain.brian.core.service;
 
 import java.util.List;
 
-import com.rgbrain.brianbot.domain.brian.infrastructure.model.DadoTemporal;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse.ResponseDadoTemporal;
 
 public record DadosTemporaisFiltrados (
     Integer previsaoPrimeiraHoraManha,
@@ -11,7 +11,7 @@ public record DadosTemporaisFiltrados (
     Integer previsaoSegundaHoraTarde
 
 ) {
-    public <T extends DadoTemporal> DadosTemporaisFiltrados(List<T> dadosTemporais) {
+    public <T extends ResponseDadoTemporal> DadosTemporaisFiltrados(List<T> dadosTemporais) {
         this(
             dadosTemporais.get(0).getValue(),
             dadosTemporais.get(1).getValue(),

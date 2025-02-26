@@ -17,15 +17,15 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoClima;
-import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoPrecipitacao;
-import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoSensacaoTermica;
-import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoTemperatura;
-import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoUmidade;
-import com.rgbrain.brianbot.domain.brian.infrastructure.model.ResponsePrevisaoVento;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorClientException;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorException;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorSerializationException;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse.ResponsePrevisaoClima;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse.ResponsePrevisaoPrecipitacao;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse.ResponsePrevisaoSensacaoTermica;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse.ResponsePrevisaoTemperatura;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse.ResponsePrevisaoUmidade;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse.ResponsePrevisaoVento;
 
 import lombok.extern.slf4j.Slf4j;
 
