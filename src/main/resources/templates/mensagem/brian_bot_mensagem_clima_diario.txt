@@ -75,21 +75,21 @@ COMIGO, BRIANBOT, VOCÊ NUNCA SERÁ PEGO DE SURPRESA PELO CLIMA! AGORA VAI LÁ E
 </instrucoes_finais>
 </prompt>
 <dados>
-nome_usuario: Rodrigo Gonçalves
-temperatura_07h: 32
-temperatura_08h: 33
-humidade_07h: 56
-humidade_08h: 58
-chuva_07h: 1
-chuva_08h: 2
-sensacao_07h: 40
-sensacao_08h: 41
-temperatura_18h: 36
-temperatura_19h: 37
-humidade_18h: 65
-humidade_19h: 69
-chuva_18h: 3
-chuva_19h: 4
-sensacao_18h:45
-sensacao_19h: 47
+nome_usuario: %s
+temperatura_07h: %s
+temperatura_08h: %s
+humidade_07h: %s
+humidade_08h: %s
+chuva_07h: %s
+chuva_08h: %s
+sensacao_07h: %s
+sensacao_08h: %s
+temperatura_18h: %s
+temperatura_19h: %s
+humidade_18h: %s
+humidade_19h: %s
+chuva_18h: %s
+chuva_19h: %s
+sensacao_18h: %s
+sensacao_19h: %s
 </dados>
