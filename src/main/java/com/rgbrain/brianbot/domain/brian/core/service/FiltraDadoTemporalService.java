@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.rgbrain.brianbot.domain.brian.core.model.DadosTemporaisFiltrados;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse.ResponseDadoTemporal;
 
 public class FiltraDadoTemporalService {

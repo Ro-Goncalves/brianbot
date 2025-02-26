@@ -5,7 +5,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
 import com.rgbrain.brianbot.application.evolution.model.EvolutionMensagemEvent;
-import com.rgbrain.brianbot.domain.brian.core.ClimaService;
+import com.rgbrain.brianbot.domain.brian.core.ClimaFacade;
 import com.rgbrain.brianbot.domain.brian.core.GramaticaService;
 import com.rgbrain.brianbot.domain.brian.core.model.ClimaCommand;
 import com.rgbrain.brianbot.infrastructure.Dominios;
@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BrianEventListener {
     
     @Autowired
-    private ClimaService climaService;
+    private ClimaFacade climaService;
 
     @Autowired
     private GramaticaService gramaticaService;

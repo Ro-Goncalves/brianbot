@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.rgbrain.brianbot.domain.brian.core.ClimaService;
+import com.rgbrain.brianbot.domain.brian.core.ClimaFacade;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BrianAgendadorClima {
 
     @Autowired
-    private ClimaService climaService;
+    private ClimaFacade climaService;
 
     @Scheduled(fixedDelay = 10 * 1000)
     public void executar() {
