@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.domain.brian.infrastructure.model;
+package com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse;
 
 import java.util.List;
 

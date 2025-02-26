@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.domain.brian.infrastructure.model;
+package com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class ResponsePrevisaoTemperatura extends ResponsePrevisao {
     private List<Temperature> temperatures;
     
-    public static class Temperature extends DadoTemporal {
+    public static class Temperature extends ResponseDadoTemporal {
 
     }
 }

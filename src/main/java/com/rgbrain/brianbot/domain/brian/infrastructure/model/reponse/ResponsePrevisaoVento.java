@@ -1,4 +1,4 @@
-package com.rgbrain.brianbot.domain.brian.infrastructure.model;
+package com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public class ResponsePrevisaoVento extends ResponsePrevisao {
     private List<Wind> winds;
 
     @Getter
-    public static class Wind extends DadoTemporal {
+    public static class Wind extends ResponseDadoTemporal {
         private Integer velocity;
         private Integer direction;
         private String directionSymbol;
