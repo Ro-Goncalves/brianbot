@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeRecHum - Abertura de Vaga</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin-top: 30px;
+        }
+        .required-field::after {
+            content: "*";
+            color: red;
+            margin-left: 4px;
+        }
+        .header-logo {
+            max-height: 60px;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="/images/rg-brain-logo.webp" alt="LeRecHum Logo" class="header-logo" th:src="@{/images/rg-brain-logo.webp}">
+                LeRecHum
+            </a>            
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4>Abertura de Nova Vaga</h4>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/lerechum/salvar}" th:object="${vaga}" method="post">
+                    
+                    <!-- Informações Básicas -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Informações Básicas</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="titulo" class="form-label required-field">Título da Vaga</label>
+                                    <input type="text" class="form-control" id="titulo" th:field="*{titulo}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="departamento" class="form-label required-field">Departamento</label>
+                                    <input type="text" class="form-control" id="departamento" th:field="*{departamento}" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="tipoContratacao" class="form-label required-field">Tipo de Contratação</label>
+                                    <select class="form-select" id="tipoContratacao" th:field="*{tipoContratacao}" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="CLT">CLT</option>
+                                        <option value="PJ">PJ</option>
+                                        <option value="Temporário">Temporário</option>
+                                        <option value="Estágio">Estágio</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="modalidade" class="form-label required-field">Modalidade</label>
+                                    <select class="form-select" id="modalidade" th:field="*{modalidade}" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Presencial">Presencial</option>
+                                        <option value="Remoto">Remoto</option>
+                                        <option value="Híbrido">Híbrido</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="localizacao" class="form-label">Localização</label>
+                                    <input type="text" class="form-control" id="localizacao" th:field="*{localizacao}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="senioridade" class="form-label">Senioridade</label>
+                                    <select class="form-select" id="senioridade" th:field="*{senioridade}">
+                                        <option value="">Selecione...</option>
+                                        <option value="Júnior">Júnior</option>
+                                        <option value="Pleno">Pleno</option>
+                                        <option value="Sênior">Sênior</option>
+                                        <option value="Especialista">Especialista</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="salario" class="form-label">Faixa Salarial</label>
+                                    <input type="text" class="form-control" id="salario" th:field="*{faixaSalarial}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="dataLimite" class="form-label">Data Limite para Candidatura</label>
+                                    <input type="date" class="form-control" id="dataLimite" th:field="*{dataLimite}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Descrição da Vaga -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Descrição da Vaga</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label required-field">Descrição Detalhada</label>
+                                <textarea class="form-control" id="descricao" rows="5" th:field="*{descricao}" required></textarea>
+                                <div class="form-text">Descreva as principais atividades e responsabilidades do cargo.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Requisitos e Qualificações -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Requisitos e Qualificações</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="requisitosObrigatorios" class="form-label required-field">Requisitos Obrigatórios</label>
+                                <textarea class="form-control" id="requisitosObrigatorios" rows="4" th:field="*{requisitosObrigatorios}" required></textarea>
+                                <div class="form-text">Liste as habilidades, conhecimentos e experiências indispensáveis para a vaga.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="requisitosDesejaveis" class="form-label">Requisitos Desejáveis</label>
+                                <textarea class="form-control" id="requisitosDesejaveis" rows="4" th:field="*{requisitosDesejaveis}"></textarea>
+                                <div class="form-text">Liste as habilidades, conhecimentos e experiências que seriam um diferencial para a vaga.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="formacaoAcademica" class="form-label">Formação Acadêmica</label>
+                                <input type="text" class="form-control" id="formacaoAcademica" th:field="*{formacaoAcademica}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Benefícios -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Benefícios</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="beneficios" class="form-label">Benefícios Oferecidos</label>
+                                <textarea class="form-control" id="beneficios" rows="4" th:field="*{beneficios}"></textarea>
+                                <div class="form-text">Descreva os benefícios que a empresa oferece (ex: plano de saúde, vale-refeição, etc).</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Processo Seletivo -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Processo Seletivo</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="etapasProcesso" class="form-label">Etapas do Processo Seletivo</label>
+                                <textarea class="form-control" id="etapasProcesso" rows="3" th:field="*{etapasProcesso}"></textarea>
+                                <div class="form-text">Descreva as etapas do processo seletivo (ex: entrevista, teste técnico, etc).</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Responsável pela Vaga -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Responsável pela Vaga</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="responsavelNome" class="form-label required-field">Nome do Responsável</label>
+                                    <input type="text" class="form-control" id="responsavelNome" th:field="*{responsavelNome}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="responsavelEmail" class="form-label required-field">E-mail do Responsável</label>
+                                    <input type="email" class="form-control" id="responsavelEmail" th:field="*{responsavelEmail}" required>
+                                </div>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="vagarPublicada" th:field="*{publicada}">
+                                <label class="form-check-label" for="vagarPublicada">Publicar vaga imediatamente</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">                       
+                        <button type="submit" class="btn btn-primary">Salvar Vaga</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 py-3 bg-light text-center">
+        <div class="container">
+            <p class="mb-0">© 2025 RG Brain Labs - LeRecHum - Sistema de Recrutamento e Seleção</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
