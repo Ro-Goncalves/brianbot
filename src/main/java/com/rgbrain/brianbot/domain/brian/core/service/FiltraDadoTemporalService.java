@@ -14,7 +14,7 @@ public class FiltraDadoTemporalService {
     private static final Integer PRIMEIRA_HORA_TARDE = Integer.valueOf(18);
     private static final Integer SEGUNDA_HORA_TARDE  = Integer.valueOf(19);
 
-    public static <T extends ResponseDadoTemporal> DadosTemporaisFiltrados filtraDadoTemporal(List<T> dadosTemporais) {
+    public <T extends ResponseDadoTemporal> DadosTemporaisFiltrados filtraDadoTemporal(List<T> dadosTemporais) {
         var hoje = LocalDate.now();
 
         var dadosTemporaisFiltrados = dadosTemporais
@@ -30,7 +30,7 @@ public class FiltraDadoTemporalService {
         return new DadosTemporaisFiltrados(dadosTemporaisFiltrados);
     }
 
-    private static Predicate<ResponseDadoTemporal> filtraPorHora(Integer hora) {
+    private Predicate<ResponseDadoTemporal> filtraPorHora(Integer hora) {
         return dadoTemporal -> dadoTemporal.getDateToLocaleDateTime().getHour() == hora;
     }
 }
