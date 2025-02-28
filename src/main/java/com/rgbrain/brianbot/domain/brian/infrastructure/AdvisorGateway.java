@@ -1,5 +1,7 @@
 package com.rgbrain.brianbot.domain.brian.infrastructure;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -9,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -18,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rgbrain.brianbot.domain.brian.infrastructure.model.entity.FalhaRequisicao;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorClientException;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorException;
 import com.rgbrain.brianbot.domain.brian.infrastructure.model.exception.AdvisorSerializationException;
@@ -111,6 +115,23 @@ public class AdvisorGateway {
             log.error("Erro ao serializar {}. {}", tipoPrevisao, e.getMessage(), e);
             throw new AdvisorSerializationException("Erro ao processar dados da " + tipoPrevisao, e);
         }
+    }
+
+    @Recover
+    public void recuperarFalhaPrevisaoTemperatura(AdvisorClientException e) {
+        log.error("Todas as tentativas de obter previsão de temperatura falharam. Registrando o erro e retornando contingência.", e);
+        
+        // Salvar falha no banco
+        FalhaRequisicao falha = new FalhaRequisicao();
+        falha.setTipoRequisicao("TEMPERATURA");
+        falha.setUrl(urlPrevisaoTemperatura);
+        falha.setMensagemErro(e.getMessage());
+        falha.setStackTrace(ExceptionUtils.getStackTrace(e));
+        falha.setDataHora(LocalDateTime.now());
+        falhaRepository.save(falha);
+        
+        // Retornar dados de contingência ou lançar uma exceção mais específica
+        return contingenciaParaTemperatura();
     }
 
     private String obterPrevisao(String url) {

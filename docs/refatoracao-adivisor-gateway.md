@@ -173,4 +173,62 @@ public class AdvisorGateway {
     }
 }
 
+Circuit Breaker Pattern: Para falhas persistentes, considere implementar o padrão Circuit Breaker (por exemplo, com Spring Cloud Circuit Breaker ou Resilience4j) para evitar sobrecarregar serviços que já estão falhando.
+
+@CircuitBreaker(name = "advisorService", fallbackMethod = "fallbackForTemperatura")
+public ResponsePrevisaoTemperatura obterPrevisaoTemperatura() {
+    // Implementação existente
+}
+
+public ResponsePrevisaoTemperatura fallbackForTemperatura(Exception e) {
+    // Método de fallback similar ao @Recover
+}
+
+Event Publishing: Para desacoplar o registro de falhas da lógica de negócios, considere publicar eventos:
+
+@Recover
+public ResponsePrevisaoTemperatura recuperarFalhaPrevisaoTemperatura(AdvisorClientException e) {
+    log.error("Todas as tentativas falharam para previsão de temperatura", e);
+    
+    // Publicar evento ao invés de acessar o repositório diretamente
+    applicationEventPublisher.publishEvent(
+        new RequisicaoFalhadaEvent("TEMPERATURA", urlPrevisaoTemperatura, e)
+    );
+    
+    return contingenciaParaTemperatura();
+}
+
+Cache para Contingência: Armazene em cache as últimas respostas bem-sucedidas para usá-las como contingência:
+
+@Cacheable(value = "previsaoTemperatura")
+public ResponsePrevisaoTemperatura obterPrevisaoTemperatura() {
+    return executarRequestEConverter(urlPrevisaoTemperatura, ResponsePrevisaoTemperatura.class, "previsão de temperatura");
+}
+
+@Recover
+public ResponsePrevisaoTemperatura recuperarFalhaPrevisaoTemperatura(AdvisorClientException e) {
+    log.error("Falha na requisição de temperatura", e);
+    registrarFalha("TEMPERATURA", urlPrevisaoTemperatura, e);
+    
+    // Tentar obter do cache manualmente usando CacheManager
+    Optional<ResponsePrevisaoTemperatura> cachedResponse = obterRespostaCached("previsaoTemperatura");
+    if (cachedResponse.isPresent()) {
+        return cachedResponse.get();
+    }
+    
+    return contingenciaParaTemperatura();
+}
+
+Monitoramento e Alertas: Além de registrar no banco, considere integrar com sistemas de monitoramento:
+@Recover
+public ResponsePrevisaoTemperatura recuperarFalhaPrevisaoTemperatura(AdvisorClientException e) {
+    // Registrar métrica para monitoramento
+    meterRegistry.counter("advisor_api_failures", "tipo", "temperatura").increment();
+    
+    // Registrar falha no banco
+    registrarFalha("TEMPERATURA", urlPrevisaoTemperatura, e);
+    
+    return contingenciaParaTemperatura();
+}
+
 ## Depois
