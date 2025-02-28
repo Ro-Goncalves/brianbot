@@ -1,37 +1,36 @@
 package com.rgbrain.brianbot.domain.brian.core.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rgbrain.brianbot.domain.brian.core.model.DadosPrevisaoClima;
 import com.rgbrain.brianbot.domain.brian.infrastructure.AdvisorGateway;
-// import com.rgbrain.brianbot.domain.brian.infrastructure.model.reponse.ResponsePrevisaoClima;
+
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class PrevisaoClimaService {
 
-    @Autowired
-    private AdvisorGateway advisorGateway;
+	private final AdvisorGateway advisorGateway;
+	private final FiltraDadoTemporalService filtraDadoTemporalService;
 
-    public DadosPrevisaoClima obterPrevisaoFiltrada() {
-        var previsaoTemperatura = FiltraDadoTemporalService.filtraDadoTemporal(
-                advisorGateway.obterPrevisaoTemperatura().getTemperatures());
+	public DadosPrevisaoClima obterPrevisaoFiltrada() {
+		var previsaoTemperatura = filtraDadoTemporalService.filtraDadoTemporal(
+				advisorGateway.obterPrevisaoTemperatura().getTemperatures());
 
-        var previsaoUmidade = FiltraDadoTemporalService.filtraDadoTemporal(
-                advisorGateway.obterPrevisaoUmidade().getHumidities());
+		var previsaoUmidade = filtraDadoTemporalService.filtraDadoTemporal(
+				advisorGateway.obterPrevisaoUmidade().getHumidities());
 
-        var previsaoPrecipitacao = FiltraDadoTemporalService.filtraDadoTemporal(
-                advisorGateway.obterPrevisaoPrecipitacao().getPrecipitations());
+		var previsaoPrecipitacao = filtraDadoTemporalService.filtraDadoTemporal(
+				advisorGateway.obterPrevisaoPrecipitacao().getPrecipitations());
 
-        var previsaoSensacaoTermica = FiltraDadoTemporalService.filtraDadoTemporal(
-                advisorGateway.obterPrevisaoSensacaoTermica().getThermalSensations());
+		var previsaoSensacaoTermica = filtraDadoTemporalService.filtraDadoTemporal(
+				advisorGateway.obterPrevisaoSensacaoTermica().getThermalSensations());
 
-        return new DadosPrevisaoClima(previsaoTemperatura, previsaoUmidade, previsaoPrecipitacao,
-                previsaoSensacaoTermica);
-    }
-
-//     public ResponsePrevisaoClima.DailyData obterPrevisaoAtual() {
-//         return advisorGateway.obterPrevisaoClima().getData().get(0);
-//     }
-
+		return new DadosPrevisaoClima(
+				previsaoTemperatura,
+				previsaoUmidade,
+				previsaoPrecipitacao,
+				previsaoSensacaoTermica);
+	}
 }
