@@ -23,7 +23,7 @@ public class ClimaFacade {
 	@Value("${MEU_ID_REMOTO}")
 	private String meuIdRemoto;
 
-	@Value("${NOME_TEMPLATE_MENSAGEM_CLIMA_DIARIO}")
+	@Value("${nome.template.mensagem.clima.diario}")
 	private String nomeTemplateMensagemClimaDiario;
 
 	@Autowired
